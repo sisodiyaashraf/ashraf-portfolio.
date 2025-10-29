@@ -1,0 +1,257 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Ashraf — Flutter Developer Portfolio</title>
+  <meta name="description" content="Portfolio of Ashraf, Flutter Developer — showcasing projects, skills, and contact information." />
+  <style>
+    :root {
+      --bg: #0a0f1f;
+      --card: #101a33;
+      --muted: #a0aec0;
+      --accent1: #00bcd4;
+      --accent2: #4f46e5;
+      --glass: rgba(255,255,255,0.05);
+      --radius: 16px;
+      --maxw: 1100px;
+      font-family: 'Poppins', system-ui, sans-serif;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      background: linear-gradient(135deg,var(--accent2),#0a192f,var(--accent1));
+      color: #f1f5f9;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 32px;
+    }
+    .wrap { width: 100%; max-width: var(--maxw); }
+    header {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 28px; flex-wrap: wrap;
+    }
+    .brand { display: flex; gap: 12px; align-items: center; }
+    .logo {
+      width: 60px; height: 60px; border-radius: 14px;
+      background: linear-gradient(135deg,var(--accent1),var(--accent2));
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 700; color: white; font-size: 22px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+    }
+    h1 { font-size: 22px; margin: 0; }
+    .subtitle { color: var(--muted); font-size: 14px; }
+
+    main { display: grid; grid-template-columns: 1fr 360px; gap: 24px; }
+    .card {
+      background: rgba(255,255,255,0.06);
+      backdrop-filter: blur(12px);
+      border-radius: var(--radius);
+      padding: 22px;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+      transition: transform 0.3s ease;
+    }
+    .card:hover { transform: translateY(-4px); }
+
+    .hero { display: flex; gap: 18px; align-items: center; flex-wrap: wrap; }
+    .avatar {
+      width: 120px; height: 120px; border-radius: 16px;
+      background: linear-gradient(135deg,var(--accent2),var(--accent1));
+      display: flex; align-items: center; justify-content: center;
+      font-size: 28px; color: white; box-shadow: 0 4px 14px rgba(0,0,0,0.4);
+    }
+    .hero-text h2 { margin: 0 0 6px 0; font-size: 24px; }
+    .hero-text p { margin: 0; color: var(--muted); }
+    .about { margin-top: 16px; color: var(--muted); line-height: 1.6; }
+
+    .skills { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 14px; }
+    .chip {
+      background: linear-gradient(135deg,rgba(255,255,255,0.1),rgba(255,255,255,0.05));
+      padding: 8px 12px; border-radius: 999px;
+      font-size: 13px; color: #e0f7fa; box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    }
+
+    .projects { margin-top: 20px; }
+    .projects-grid {
+      display: grid; grid-template-columns: repeat(auto-fit,minmax(220px,1fr));
+      gap: 16px; margin-top: 12px;
+    }
+    .proj {
+      padding: 14px; border-radius: 12px;
+      background: linear-gradient(135deg,rgba(255,255,255,0.05),rgba(255,255,255,0.08));
+      cursor: pointer; transition: transform 180ms ease,box-shadow 180ms ease;
+    }
+    .proj:hover { transform: translateY(-6px); box-shadow: 0 8px 20px rgba(0,0,0,0.3); }
+    .proj h4 { margin: 0 0 6px 0; color: #fff; }
+    .proj p { margin: 0; color: var(--muted); font-size: 13px; }
+    .proj a { color: var(--accent1); text-decoration: none; font-size: 13px; }
+
+    aside { display: flex; flex-direction: column; gap: 14px; }
+    .contact-row { display: flex; align-items: center; gap: 10px; }
+    .contact-row a { color: #bbf7ff; text-decoration: none; word-break: break-all; }
+    .resume {
+      display: inline-block; padding: 10px 14px; border-radius: 10px;
+      background: linear-gradient(90deg,var(--accent1),var(--accent2));
+      color: white; text-decoration: none; font-weight: 600;
+      transition: transform 0.2s ease;
+    }
+    .resume:hover { transform: scale(1.05); }
+
+    footer { margin-top: 24px; text-align: center; color: var(--muted); font-size: 13px; }
+    @media (max-width:880px) {
+      main { grid-template-columns: 1fr; }
+      aside { order: 2; }
+      header { flex-direction: column; align-items: flex-start; gap: 12px; }
+      .avatar { width: 96px; height: 96px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <div class="brand">
+        <div class="logo">AS</div>
+        <div>
+          <h1>Ashraf — Flutter Developer</h1>
+          <div class="subtitle">Building responsive, beautiful Flutter apps with Supabase backend</div>
+        </div>
+      </div>
+      <nav>
+        <a href="#projects" style="color:var(--muted);text-decoration:none;margin-right:14px">Projects</a>
+        <a href="#contact" style="color:var(--muted);text-decoration:none">Contact</a>
+      </nav>
+    </header>
+
+    <main>
+      <div>
+        <section class="card hero">
+          <div class="avatar">👨‍💻</div>
+          <div class="hero-text">
+            <h2>Hi — I'm Ashraf 👋</h2>
+            <p class="subtitle">A fresher Flutter Developer passionate about creating sleek, functional, and performant mobile apps.</p>
+
+            <div class="about">I'm a dedicated Flutter developer focusing on UI/UX, animations, and Supabase integration for real-time data and authentication.</div>
+
+            <div class="skills">
+              <span class="chip">Flutter</span>
+              <span class="chip">Dart</span>
+              <span class="chip">Supabase</span>
+              <span class="chip">Bloc</span>
+              <span class="chip">Riverpod</span>
+              <span class="chip">Firebase</span>
+              <span class="chip">Responsive UI</span>
+              <span class="chip">Animations</span>
+            </div>
+          </div>
+        </section>
+
+        <section id="projects" class="card projects">
+          <h3 style="margin:0">My Projects</h3>
+          <div class="projects-grid">
+            <div class="proj">
+              <h4>Gromart Grocery App</h4>
+              <p>Full grocery shopping app using Flutter + Supabase for backend.</p>
+              <a href="https://github.com/sisodiyaashraf/gromart" target="_blank">View on GitHub →</a>
+            </div>
+            <div class="proj">
+              <h4>Sport & Exercise App</h4>
+              <p>Workout tracker with Supabase storage for data and analytics.</p>
+              <a href="https://github.com/sisodiyaashraf/sport_exercise_app" target="_blank">View on GitHub →</a>
+            </div>
+            <div class="proj">
+              <h4>Chat App</h4>
+              <p>Real-time chat using Supabase Realtime and Flutter WebSockets.</p>
+              <a href="https://github.com/sisodiyaashraf/chatapp" target="_blank">View on GitHub →</a>
+            </div>
+            <div class="proj">
+              <h4>Movie App UI</h4>
+              <p>Modern movie app UI with animation and responsive layout.</p>
+              <a href="https://github.com/sisodiyaashraf/movieapp_ui" target="_blank">View on GitHub →</a>
+            </div>
+          </div>
+        </section>
+
+        <section class="card" style="margin-top:16px">
+          <h3 style="margin:0">Why Hire Me?</h3>
+          <ul style="color:var(--muted);line-height:1.6;margin-top:10px">
+            <li>Strong knowledge of Flutter, Dart, and Supabase backend.</li>
+            <li>Focus on building beautiful and responsive user interfaces.</li>
+            <li>Enthusiastic about learning and solving real-world challenges.</li>
+            <li>Creative mindset and a team-first attitude.</li>
+          </ul>
+        </section>
+      </div>
+
+      <aside>
+        <div class="card" id="contact">
+          <h4 style="margin:0">Hire Me — Quick Form</h4>
+          <form id="hireForm" style="margin-top:10px">
+            <input id="name" placeholder="Your name" required style="width:100%;padding:8px;border-radius:8px;border:0;background:rgba(255,255,255,0.1);color:inherit;margin-bottom:8px">
+            <input id="email" type="email" placeholder="Email" required style="width:100%;padding:8px;border-radius:8px;border:0;background:rgba(255,255,255,0.1);color:inherit;margin-bottom:8px">
+            <textarea id="message" placeholder="Project details" required style="width:100%;padding:8px;border-radius:8px;border:0;background:rgba(255,255,255,0.1);color:inherit;min-height:90px"></textarea>
+            <button type="submit" style="margin-top:8px;width:100%;padding:10px;border-radius:10px;border:0;background:linear-gradient(90deg,var(--accent1),var(--accent2));color:white;font-weight:600">Send</button>
+            <div id="status" style="margin-top:8px;color:var(--muted);font-size:13px"></div>
+          </form>
+        </div>
+
+        <div class="card">
+          <h4 style="margin:0">Contact Info</h4>
+          <div style="margin-top:10px;color:var(--muted)">Available for opportunities & collaborations.</div>
+          <div style="margin-top:12px" class="contact-row">
+            <div>✉</div>
+            <div><a href="mailto:ashrafsisodiya478@gamil.com">ashrafsisodiya478@gamil.com</a></div>
+          </div>
+          <div style="margin-top:10px" class="contact-row">
+            <div>🔗</div>
+            <div><a href="https://github.com/sisodiyaashraf?tab=repositories" target="_blank">github.com/sisodiyaashraf</a></div>
+          </div>
+          <div style="margin-top:12px">
+            <a class="resume" href="https://afadvyuogztogdclfjlq.supabase.co/storage/v1/object/public/resume/Resume.pdf" target="_blank">📄 Download Resume</a>
+          </div>
+        </div>
+      </aside>
+    </main>
+
+    <footer>
+      © <span id="year"></span> Ashraf • Built with Flutter skills, HTML, and Supabase
+    </footer>
+  </div>
+
+  <!-- Load Supabase first -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+
+  <!-- Your Script -->
+  <script>
+    document.getElementById('year').textContent = new Date().getFullYear();
+
+    const SUPABASE_URL = 'https://afadvyuogztogdclfjlq.supabase.co';
+    const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFmYWR2eXVvZ3p0b2dkY2xmamxxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjEyNzg1MjUsImV4cCI6MjA3Njg1NDUyNX0.rvIAmFYOKlvsjsUIHP7RTQB-q4M944QQCm4M7IgT3S4'; // replace locally, never post online
+    const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+    document.getElementById('hireForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const name = document.getElementById('name').value.trim();
+      const email = document.getElementById('email').value.trim();
+      const message = document.getElementById('message').value.trim();
+      const status = document.getElementById('status');
+
+      status.textContent = 'Sending...';
+
+      const { data, error } = await supabase
+        .from('hire_requests')
+        .insert([{ name, email, message }]);
+
+      if (error) {
+        console.error('Supabase insert error:', error);
+        status.textContent = '❌ Something went wrong. Check console.';
+      } else {
+        console.log('Inserted:', data);
+        status.textContent = '✅ Message sent successfully!';
+        e.target.reset();
+      }
+    });
+  </script>
+</body>
+</html>
