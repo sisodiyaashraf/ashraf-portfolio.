@@ -84,6 +84,41 @@
       cursor: pointer; transition: transform 180ms ease,box-shadow 180ms ease;
     }
     .proj:hover { transform: translateY(-6px); box-shadow: 0 8px 20px rgba(0,0,0,0.3); }
+    
+    .proj-img {
+      width: 100%;
+      height: 140px;
+      object-fit: contain; /* Shows full image */
+      border-radius: 8px;
+      margin-bottom: 12px;
+      background-color: rgba(0,0,0,0.2); /* Adds a background to letterbox */
+    }
+
+    .proj-gallery {
+      display: flex;
+      overflow-x: scroll;
+      scroll-snap-type: x mandatory;
+      gap: 10px; /* Adds space between images */
+      border-radius: 8px;
+      margin-bottom: 12px;
+      /* Hide scrollbar */
+      scrollbar-width: none; /* Firefox */
+      -ms-overflow-style: none; /* IE/Edge */
+    }
+    .proj-gallery::-webkit-scrollbar {
+      display: none; /* Chrome/Safari/Opera */
+    }
+    
+    .proj-gallery-img {
+      height: 280px; /* Taller height for screenshots */
+      width: auto; /* Auto width to keep aspect ratio */
+      object-fit: contain; /* Show full image */
+      scroll-snap-align: start;
+      flex-shrink: 0;
+      border-radius: 6px;
+      background-color: rgba(0,0,0,0.2);
+    }
+
     .proj h4 { margin: 0 0 6px 0; color: #fff; }
     .proj p { margin: 0; color: var(--muted); font-size: 13px; }
     .proj a { color: var(--accent1); text-decoration: none; font-size: 13px; }
@@ -130,16 +165,17 @@
           <div class="avatar">👨‍💻</div>
           <div class="hero-text">
             <h2>Hi — I'm Ashraf 👋</h2>
-            <p class="subtitle">A fresher Flutter Developer passionate about creating sleek, functional, and performant mobile apps.</p>
+            <p class="subtitle">A Flutter Developer passionate about creating sleek, functional, and performant mobile apps.</p>
 
             <div class="about">I'm a dedicated Flutter developer focusing on UI/UX, animations, and Supabase integration for real-time data and authentication.</div>
 
             <div class="skills">
               <span class="chip">Flutter</span>
               <span class="chip">Dart</span>
-              <span class="chip">Supabase</span>
+            <span class="chip">Supabase</span>
+              <span class="chip">Provider</span>
               <span class="chip">Bloc</span>
-              <span class="chip">Riverpod</span>
+              <span class="chip">RestApi</span>
               <span class="chip">Firebase</span>
               <span class="chip">Responsive UI</span>
               <span class="chip">Animations</span>
@@ -150,26 +186,64 @@
         <section id="projects" class="card projects">
           <h3 style="margin:0">My Projects</h3>
           <div class="projects-grid">
+            
             <div class="proj">
+              <div class="proj-gallery">
+              <img src="https://afadvyuogztogdclfjlq.supabase.co/storage/v1/object/sign/project%20images/Screenshot_1762065759.png?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV8zODcyNTRiZi0wNTk0LTQ1NDEtYTZmYy02MDRmYzRmZGNmNzEiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJwcm9qZWN0IGltYWdlcy9TY3JlZW5zaG90XzE3NjIwNjU3NTkucG5nIiwiaWF0IjoxNzYyMDY4NzUzLCJleHAiOjIwNzc0Mjg3NTN9.LHhoiVgV5Dj5nAdIke_XPXIveGxDn9DLlNZIHqqqnCM" alt="Gromart Screenshot 1" class="proj-gallery-img">
+    <img src="https://afadvyuogztogdclfjlq.supabase.co/storage/v1/object/sign/project%20images/Screenshot_1762065787.png?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV8zODcyNTRiZi0wNTk0LTQ1NDEtYTZmYy02MDRmYzRmZGNmNzEiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJwcm9qZWN0IGltYWdlcy9TY3JlZW5zaG90XzE3NjIwNjU3ODcucG5nIiwiaWF0IjoxNzYyMDY4Nzk4LCJleHAiOjIwNzc0Mjg3OTh9.KBB42Yin_5qhGha72Vzjjla_rQOY56F46czxy-GH4IM" alt="Gromart Screenshot 2" class="proj-gallery-img">
+    <img src="https://afadvyuogztogdclfjlq.supabase.co/storage/v1/object/sign/project%20images/Screenshot_1762066042.png?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV8zODcyNTRiZi0wNTk0LTQ1NDEtYTZmYy02MDRmYzRmZGNmNzEiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJwcm9qZWN0IGltYWdlcy9TY3JlZW5zaG90XzE3NjIwNjYwNDIucG5nIiwiaWF0IjoxNzYyMDY4ODM1LCJleHAiOjIwNzc0Mjg4MzV9.lWAamieJDWNyyuky-MMyWkmjj61VeG0hpa0lFd_quXo" alt="Gromart Screenshot 3" class="proj-gallery-img">
+    <img src="https://afadvyuogztogdclfjlq.supabase.co/storage/v1/object/sign/project%20images/Screenshot_1762066077.png?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV8zODcyNTRiZi0wNTk0LTQ1NDEtYTZmYy02MDRmYzRmZGNmNzEiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJwcm9qZWN0IGltYWdlcy9TY3JlZW5zaG90XzE3NjIwNjYwNzcucG5nIiwiaWF0IjoxNzYyMDY4ODcyLCJleHAiOjIwNzc0Mjg4NzJ9.w5VIbYnUzK6rq5PfhSu_FSI3czcJwTfJYyRoXflyAZ0" alt="Gromart Screenshot 4" class="proj-gallery-img">
+    <img src="https://afadvyuogztogdclfjlq.supabase.co/storage/v1/object/sign/project%20images/Screenshot_1762066092.png?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV8zODcyNTRiZi0wNTk0LTQ1NDEtYTZmYy02MDRmYzRmZGNmNzEiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJwcm9qZWN0IGltYWdlcy9TY3JlZW5zaG90XzE3NjIwNjYwOTIucG5nIiwiaWF0IjoxNzYyMDY4ODk5LCJleHAiOjIwNzc0Mjg4OTl9.sv3EezT0tMlLgYQHn0H6SItlUJZkDdI33y9DeFSQ9Oo" alt="Gromart Screenshot 5" class="proj-gallery-img">
+    <img src="https://afadvyuogztogdclfjlq.supabase.co/storage/v1/object/sign/project%20images/Screenshot_1762066114.png?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV8zODcyNTRiZi0wNTk0LTQ1NDEtYTZmYy02MDRmYzRmZGNmNzEiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJwcm9qZWN0IGltYWdlcy9TY3JlZW5zaG90XzE3NjIwNjYxMTQucG5nIiwiaWF0IjoxNzYyMDY4OTMyLCJleHAiOjIwNzc0Mjg5MzJ9.cRheWXlpeu6PTRjT2Y9aZfHcr4yb1DvNj4WkkF0aIIA" alt="Gromart Screenshot 6" class="proj-gallery-img">
+    <img src="https://afadvyuogztogdclfjlq.supabase.co/storage/v1/object/sign/project%20images/Screenshot_1762066159.png?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV8zODcyNTRiZi0wNTk0LTQ1NDEtYTZmYy02MDRmYzRmZGNmNzEiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJwcm9qZWN0IGltYWdlcy9TY3JlZW5zaG90XzE3NjIwNjYxNTkucG5nIiwiaWF0IjoxNzYyMDY4OTk5LCJleHAiOjIwNzc0Mjg5OTl9.XTTLIBrVj_T-9uoeQbZN0cDsTSZUYUbhpB5cISvGoSs" alt="Gromart Screenshot 7" class="proj-gallery-img">
+    <img src="https://afadvyuogztogdclfjlq.supabase.co/storage/v1/object/sign/project%20images/Screenshot_1762066188.png?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV8zODcyNTRiZi0wNTk0LTQ1NDEtYTZmYy02MDRmYzRmZGNmNzEiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJwcm9qZWN0IGltYWdlcy9TY3JlZW5zaG90XzE3NjIwNjYxODgucG5nIiwiaWF0IjoxNzYyMDY4OTcwLCJleHAiOjIwNzc0Mjg5NzB9.LjfST-BA5Jlkg0m9OuNfB3PC4iK6atP8YeOF8xvL234" alt="Gromart Screenshot 8" class="proj-gallery-img">
+              </div>
               <h4>Gromart Grocery App</h4>
               <p>Full grocery shopping app using Flutter + Supabase for backend.</p>
               <a href="https://github.com/sisodiyaashraf/gromart" target="_blank">View on GitHub →</a>
             </div>
+            
             <div class="proj">
+              <div class="proj-gallery">
+                <img src="https://afadvyuogztogdclfjlq.supabase.co/storage/v1/object/sign/project%20images/Screenshot_1762065233.png?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV8zODcyNTRiZi0wNTk0LTQ1NDEtYTZmYy02MDRmYzRmZGNmNzEiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJwcm9qZWN0IGltYWdlcy9TY3JlZW5zaG90XzE3NjIwNjUyMzMucG5nIiwiaWF0IjoxNzYyMDY2OTIyLCJleHAiOjE5MTk3NDY5MjJ9.LrA_2HrHPXPUX94NJ7owRCFzXr3WcnEG0CNOl91Q0go" alt="Sport & Exercise App 1" class="proj-gallery-img">
+                <img src="https://afadvyuogztogdclfjlq.supabase.co/storage/v1/object/sign/project%20images/Screenshot_1762065439.png?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV8zODcyNTRiZi0wNTk0LTQ1NDEtYTZmYy02MDRmYzRmZGNmNzEiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJwcm9qZWN0IGltYWdlcy9TY3JlZW5zaG90XzE3NjIwNjU0MzkucG5nIiwiaWF0IjoxNzYyMDY3MDAxLCJleHAiOjE4MjUxMzkwMDF9.XkXaUzEUnzcxmj94oQtv99s-bd_gYWJYQBIhQSH65bw" alt="Sport & Exercise App 2" class="proj-gallery-img">
+                <img src="https://afadvyuogztogdclfjlq.supabase.co/storage/v1/object/sign/project%20images/Screenshot_1762065421.png?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV8zODcyNTRiZi0wNTk0LTQ1NDEtYTZmYy02MDRmYzRmZGNmNzEiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJwcm9qZWN0IGltYWdlcy9TY3JlZW5zaG90XzE3NjIwNjU0MjEucG5nIiwiaWF0IjoxNzYyMDY3MDgzLCJleHAiOjE5MTk3NDcwODN9.m9bBOsrFc9hPG0xcOoJcQNi_x8rxn4px2Ty3LMCxDcU" alt="Sport & Exercise App 3" class="proj-gallery-img">
+                <img src="https://afadvyuogztogdclfjlq.supabase.co/storage/v1/object/sign/project%20images/Screenshot_1762065458.png?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV8zODcyNTRiZi0wNTk0LTQ1NDEtYTZmYy02MDRmYzRmZGNmNzEiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJwcm9qZWN0IGltYWdlcy9TY3JlZW5zaG90XzE3NjIwNjU0NTgucG5nIiwiaWF0IjoxNzYyMDY3MTMwLCJleHAiOjE5MTk3NDcxMzB9.oKxr_Kv6Efnx2dv2iT1XJPBpwh9_FslFNhU4hZHR4SA" alt="Sport & Exercise App 4" class="proj-gallery-img">
+                <img src="https://afadvyuogztogdclfjlq.supabase.co/storage/v1/object/sign/project%20images/Screenshot_1762065659.png?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV8zODcyNTRiZi0wNTk0LTQ1NDEtYTZmYy02MDRmYzRmZGNmNzEiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJwcm9qZWN0IGltYWdlcy9TY3JlZW5zaG90XzE3NjIwNjU2NTkucG5nIiwiaWF0IjoxNzYyMDY3MTYyLCJleHAiOjE5MTk3NDcxNjJ9.uWxg-csNUPy8-t4ge1um889ifhblpTASryNc047Xgm0" alt="Sport & Exercise App 5" class="proj-gallery-img">
+                <img src="https://afadvyuogztogdclfjlq.supabase.co/storage/v1/object/sign/project%20images/Screenshot_1762065687.png?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV8zODcyNTRiZi0wNTk0LTQ1NDEtYTZmYy02MDRmYzRmZGNmNzEiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJwcm9qZWN0IGltYWdlcy9TY3JlZW5zaG90XzE3NjIwNjU2ODcucG5nIiwiaWF0IjoxNzYyMDY3MTk1LCJleHAiOjE5MTk3NDcxOTV9.kKZq2ZCABE_0M4TiA1sAPdUpQIU9oYEYNZBj4VmA1ck" alt="Sport & Exercise App 6" class="proj-gallery-img">
+              </div>
               <h4>Sport & Exercise App</h4>
               <p>Workout tracker with Supabase storage for data and analytics.</p>
-              <a href="https://github.com/sisodiyaashraf/sport_exercise_app" target="_blank">View on GitHub →</a>
+              <a href="https://github.com/sisodiyaashraf/Sport_App" target="_blank">View on GitHub →</a>
             </div>
             <div class="proj">
+              <div class="proj-gallery">
+              <img src="https://afadvyuogztogdclfjlq.supabase.co/storage/v1/object/sign/project%20images/Screenshot%202025-11-02%20173248.png?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV8zODcyNTRiZi0wNTk0LTQ1NDEtYTZmYy02MDRmYzRmZGNmNzEiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJwcm9qZWN0IGltYWdlcy9TY3JlZW5zaG90IDIwMjUtMTEtMDIgMTczMjQ4LnBuZyIsImlhdCI6MTc2MjA4NzAxNCwiZXhwIjoyMDc3NDQ3MDE0fQ.yCgHpzgkgLmvcGxlSfk0gN7O91SISAB3hA7xucE5gXg" alt="Chat App" class="proj-gallery-img">
+              <img src="https://afadvyuogztogdclfjlq.supabase.co/storage/v1/object/sign/project%20images/Screenshot%202025-11-02%20174026.png?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV8zODcyNTRiZi0wNTk0LTQ1NDEtYTZmYy02MDRmYzRmZGNmNzEiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJwcm9qZWN0IGltYWdlcy9TY3JlZW5zaG90IDIwMjUtMTEtMDIgMTc0MDI2LnBuZyIsImlhdCI6MTc2MjA4NzgxNiwiZXhwIjoyMDc3NDQ3ODE2fQ.lKgkwZTpMQgprUQkpetcGEhCp-uUYKBdMeSYuUJ0iH8" alt="Chat App" class="proj-gallery-img">
+              <img src="https://afadvyuogztogdclfjlq.supabase.co/storage/v1/object/sign/project%20images/Screenshot_1739188543.png?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV8zODcyNTRiZi0wNTk0LTQ1NDEtYTZmYy02MDRmYzRmZGNmNzEiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJwcm9qZWN0IGltYWdlcy9TY3JlZW5zaG90XzE3MzkxODg1NDMucG5nIiwiaWF0IjoxNzYyMDg3ODY4LCJleHAiOjIwNzc0NDc4Njh9.2EEUaYcEB316Y9OgrhuRHcUIWERM7s7L_5h6_ODGOpE" alt="Chat App" class="proj-gallery-img">
+              <img src="https://afadvyuogztogdclfjlq.supabase.co/storage/v1/object/sign/project%20images/Screenshot%202025-11-02%20174139.png?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV8zODcyNTRiZi0wNTk0LTQ1NDEtYTZmYy02MDRmYzRmZGNmNzEiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJwcm9qZWN0IGltYWdlcy9TY3JlZW5zaG90IDIwMjUtMTEtMDIgMTc0MTM5LnBuZyIsImlhdCI6MTc2MjA4NzkwNywiZXhwIjoyMDc3NDQ3OTA3fQ.aLbYXQE5142DYKf7a--DdkSC1t4FPogwLGyIXR2Y3bw" alt="Chat App" class="proj-gallery-img">
+              <img src="https://afadvyuogztogdclfjlq.supabase.co/storage/v1/object/sign/project%20images/Screenshot%202025-11-02%20174440.png?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV8zODcyNTRiZi0wNTk0LTQ1NDEtYTZmYy02MDRmYzRmZGNmNzEiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJwcm9qZWN0IGltYWdlcy9TY3JlZW5zaG90IDIwMjUtMTEtMDIgMTc0NDQwLnBuZyIsImlhdCI6MTc2MjA4Nzk2NCwiZXhwIjoyMDc3NDQ3OTY0fQ.lo9vsoerPNUx9hjbAcQaetYC2LmMZA_vDUUbSZGSb5Q" alt="Chat App" class="proj-gallery-img">
+              <img src="https://afadvyuogztogdclfjlq.supabase.co/storage/v1/object/sign/project%20images/Screenshot%202025-11-02%20174312.png?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV8zODcyNTRiZi0wNTk0LTQ1NDEtYTZmYy02MDRmYzRmZGNmNzEiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJwcm9qZWN0IGltYWdlcy9TY3JlZW5zaG90IDIwMjUtMTEtMDIgMTc0MzEyLnBuZyIsImlhdCI6MTc2MjA4NzkzNCwiZXhwIjoyMDc3NDQ3OTM0fQ.PMLAr5nrGbD27AKuVOapB_KfhfcQFAjZQKdHyx6VNlo" alt="Chat App" class="proj-gallery-img">
+              </div>
               <h4>Chat App</h4>
               <p>Real-time chat using Supabase Realtime and Flutter WebSockets.</p>
-              <a href="https://github.com/sisodiyaashraf/chatapp" target="_blank">View on GitHub →</a>
+              <a href="https://github.com/sisodiyaashraf/ChatAPP" target="_blank">View on GitHub →</a>
             </div>
+            
             <div class="proj">
+              <div class="proj-gallery">
+              <img src="https://afadvyuogztogdclfjlq.supabase.co/storage/v1/object/sign/project%20images/Screenshot_1762083237.png?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV8zODcyNTRiZi0wNTk0LTQ1NDEtYTZmYy02MDRmYzRmZGNmNzEiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJwcm9qZWN0IGltYWdlcy9TY3JlZW5zaG90XzE3NjIwODMyMzcucG5nIiwiaWF0IjoxNzYyMDg3MTk1LCJleHAiOjIwNzc0NDcxOTV9.tMSWJ4ezfpeE_fqb2km1p15HXVUYm-drOpP60FY_Zb0" alt="Movie App UI" class="proj-gallery-img">
+              <img src="https://afadvyuogztogdclfjlq.supabase.co/storage/v1/object/sign/project%20images/Screenshot_1762083305.png?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV8zODcyNTRiZi0wNTk0LTQ1NDEtYTZmYy02MDRmYzRmZGNmNzEiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJwcm9qZWN0IGltYWdlcy9TY3JlZW5zaG90XzE3NjIwODMzMDUucG5nIiwiaWF0IjoxNzYyMDg3NTAyLCJleHAiOjIwNzc0NDc1MDJ9.7ZqxkxBMqgmcsCbwUMVnr7VVYJRSnDN32jke7XyY5VU" alt="Movie App UI" class="proj-gallery-img">
+              <img src="https://afadvyuogztogdclfjlq.supabase.co/storage/v1/object/sign/project%20images/Screenshot_1762083243.png?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV8zODcyNTRiZi0wNTk0LTQ1NDEtYTZmYy02MDRmYzRmZGNmNzEiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJwcm9qZWN0IGltYWdlcy9TY3JlZW5zaG90XzE3NjIwODMyNDMucG5nIiwiaWF0IjoxNzYyMDg4MDcwLCJleHAiOjIwNzc0NDgwNzB9.YS6AU_0hQ6dLiDko5RWV1oaEsgZ2m0RZ5_2STlqHtvA" alt="Movie App UI" class="proj-gallery-img">
+              <img src="https://afadvyuogztogdclfjlq.supabase.co/storage/v1/object/sign/project%20images/Screenshot_1762083281.png?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV8zODcyNTRiZi0wNTk0LTQ1NDEtYTZmYy02MDRmYzRmZGNmNzEiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJwcm9qZWN0IGltYWdlcy9TY3JlZW5zaG90XzE3NjIwODMyODEucG5nIiwiaWF0IjoxNzYyMDg4MDM4LCJleHAiOjIwNzc0NDgwMzh9.MLyZYNZ3XomBNP9SynBp2GXmulwHfvhkoGuLtgOoSA0" alt="Movie App UI" class="proj-gallery-img">
+              <img src="https://afadvyuogztogdclfjlq.supabase.co/storage/v1/object/sign/project%20images/Screenshot_1762083275.png?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV8zODcyNTRiZi0wNTk0LTQ1NDEtYTZmYy02MDRmYzRmZGNmNzEiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJwcm9qZWN0IGltYWdlcy9TY3JlZW5zaG90XzE3NjIwODMyNzUucG5nIiwiaWF0IjoxNzYyMDg4MTE0LCJleHAiOjIwNzc0NDgxMTR9.k9w4-ML6opU20wACtFB_0VZ7NKZ1mQSi7fOuDRHBZf4" alt="Movie App UI" class="proj-gallery-img">
+              <img src="https://afadvyuogztogdclfjlq.supabase.co/storage/v1/object/sign/project%20images/Screenshot_1762083284.png?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV8zODcyNTRiZi0wNTk0LTQ1NDEtYTZmYy02MDRmYzRmZGNmNzEiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJwcm9qZWN0IGltYWdlcy9TY3JlZW5zaG90XzE3NjIwODMyODQucG5nIiwiaWF0IjoxNzYyMDg4MDExLCJleHAiOjIwNzc0NDgwMTF9.NR-Zu97S8cpi_h1DrpAPj3L_aV6ZV62PeCzGqoMfB1E" alt="Movie App UI" class="proj-gallery-img">
+              </div>
               <h4>Movie App UI</h4>
               <p>Modern movie app UI with animation and responsive layout.</p>
-              <a href="https://github.com/sisodiyaashraf/movieapp_ui" target="_blank">View on GitHub →</a>
+              <a href="https://github.com/sisodiyaashraf/Movie-app" target="_blank">View on GitHub →</a>
             </div>
+
           </div>
         </section>
 
@@ -219,15 +293,13 @@
     </footer>
   </div>
 
-  <!-- Load Supabase first -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
 
-  <!-- Your Script -->
   <script>
     document.getElementById('year').textContent = new Date().getFullYear();
 
     const SUPABASE_URL = 'https://afadvyuogztogdclfjlq.supabase.co';
-    const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFmYWR2eXVvZ3p0b2dkY2xmamxxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjEyNzg1MjUsImV4cCI6MjA3Njg1NDUyNX0.rvIAmFYOKlvsjsUIHP7RTQB-q4M944QQCm4M7IgT3S4'; // replace locally, never post online
+    const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFmYWR2eXVvZ3p0b2dkY2xmamxxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjEyNzg1MjUsImV4cCI6MjA3Njg1NDUyNX0.rvIAmFYOKlvsjsUIHP7RTQB-q4M944QQCm4M7IgT3S4';
     const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
     document.getElementById('hireForm').addEventListener('submit', async (e) => {
