@@ -1,640 +1,802 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <title>Ashraf — Flutter Developer</title>
-  
-  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
-  <script src="https://unpkg.com/@phosphor-icons/web"></script>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>Ashraf — Flutter Developer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://unpkg.com/@phosphor-icons/web"></script>
+<style>
+  /* ============ TOKENS ============ */
+  :root{
+    --void:#0B0E14;
+    --panel:#11151F;
+    --panel-alt:#171C28;
+    --panel-raise:#1C222F;
+    --line:rgba(255,255,255,0.08);
+    --line-soft:rgba(255,255,255,0.05);
+    --text:#D6DEEB;
+    --text-dim:#8B93A7;
+    --text-faint:#565E72;
+    --cyan:#64FFDA;
+    --amber:#FFCB6B;
+    --purple:#C792EA;
+    --rose:#F07178;
+    --vscode-blue:#0A84D6;
+    --radius:14px;
+    --mono:'JetBrains Mono', monospace;
+    --sans:'Inter', sans-serif;
+  }
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+  html{scroll-behavior:smooth;scroll-padding-top:56px;}
+  @media (prefers-reduced-motion: reduce){
+    html{scroll-behavior:auto;}
+    *{animation-duration:0.01ms !important; animation-iteration-count:1 !important; transition-duration:0.01ms !important;}
+  }
+  body{
+    margin:0; background:var(--void); color:var(--text); font-family:var(--sans);
+    min-height:100dvh; padding-top:52px; padding-bottom:56px;
+    background-image:
+      radial-gradient(circle at 15% 10%, rgba(100,255,218,0.05), transparent 40%),
+      radial-gradient(circle at 85% 30%, rgba(199,146,234,0.05), transparent 45%),
+      linear-gradient(var(--line-soft) 1px, transparent 1px),
+      linear-gradient(90deg, var(--line-soft) 1px, transparent 1px);
+    background-size: auto, auto, 42px 42px, 42px 42px;
+    background-position: 0 0, 0 0, -1px -1px, -1px -1px;
+  }
 
-  <style>
-    :root {
-      /* Base Variables */
-      --card-bg: rgba(20, 20, 20, 0.65); 
-      --card-border: rgba(255, 255, 255, 0.1);
-      --primary: #6366f1;
-      --accent: #ec4899;
-      --highlight: #22d3ee;
-      --text: #e2e8f0;
-      --text-muted: #94a3b8;
-      --radius: 24px;
-      --flutter-logo-url: url('https://afadvyuogztogdclfjlq.supabase.co/storage/v1/object/sign/profile/flutterlogofloa.png?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV8zODcyNTRiZi0wNTk0LTQ1NDEtYTZmYy02MDRmYzRmZGNmNzEiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJwcm9maWxlL2ZsdXR0ZXJsb2dvZmxvYS5wbmciLCJpYXQiOjE3NjUxOTgzNTYsImV4cCI6MjA4MDU1ODM1Nn0.EcdLWMdX3PuhBtyx6NHdXiWiVnwkuGXZtzPdjQFLhx0');
-    }
+  ::selection{ background: rgba(100,255,218,0.25); color:#fff; }
 
-    * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  a{ color: inherit; }
 
-    html { scroll-behavior: smooth; }
+  /* ============ BOOT LOADER ============ */
+  .boot-loader{
+    position:fixed; inset:0; z-index:9998; background:var(--void);
+    display:flex; align-items:center; justify-content:center;
+    transition: opacity .5s ease, visibility .5s ease;
+  }
+  .boot-loader.done{ opacity:0; visibility:hidden; pointer-events:none; }
+  .boot-text{ font-family:var(--mono); color:var(--text-dim); font-size:14px; text-align:center; }
+  .boot-dots::after{ content:""; animation: bootDots 1.2s steps(4) infinite; }
+  @keyframes bootDots{ 0%{content:"";} 25%{content:".";} 50%{content:"..";} 75%{content:"...";} 100%{content:"";} }
+  .boot-bar{ width:200px; height:2px; background:var(--line); margin:16px auto 0; border-radius:2px; overflow:hidden; }
+  .boot-bar-fill{ height:100%; width:0%; background:linear-gradient(90deg,var(--cyan),var(--purple)); animation: bootFill 0.9s ease forwards; }
+  @keyframes bootFill{ from{width:0%;} to{width:100%;} }
 
-    body {
-      margin: 0;
-      background: radial-gradient(circle at center, #1e1e2e, #000); 
-      font-family: 'Outfit', sans-serif;
-      color: var(--text);
-      overflow-x: hidden;
-      /* Dynamic Height for Mobile Browsers */
-      min-height: 100dvh; 
-      position: relative;
-    }
+  /* ============ AMBIENT BACKGROUND ============ */
+  #netCanvas{ position:fixed; inset:0; z-index:-6; width:100%; height:100%; opacity:.5; }
+  .aurora{ position:fixed; z-index:-7; border-radius:50%; filter:blur(90px); pointer-events:none; opacity:.35; }
+  .aurora-1{ width:46vw; height:46vw; top:-14vw; left:-10vw; background:radial-gradient(circle, rgba(100,255,218,0.35), transparent 70%); animation: driftA 22s ease-in-out infinite alternate; }
+  .aurora-2{ width:40vw; height:40vw; bottom:-16vw; right:-10vw; background:radial-gradient(circle, rgba(199,146,234,0.3), transparent 70%); animation: driftB 26s ease-in-out infinite alternate; }
+  @keyframes driftA{ from{ transform:translate(0,0) scale(1); } to{ transform:translate(6vw,8vw) scale(1.15); } }
+  @keyframes driftB{ from{ transform:translate(0,0) scale(1); } to{ transform:translate(-5vw,-6vw) scale(1.1); } }
+  @media (prefers-reduced-motion: reduce){ .aurora-1,.aurora-2{ animation:none; } }
 
-    /* --- BACKGROUNDS --- */
-    #hero-bg {
-      position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -10;
-      background-image: url('https://afadvyuogztogdclfjlq.supabase.co/storage/v1/object/sign/profile/flutterbird.png?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV8zODcyNTRiZi0wNTk0LTQ1NDEtYTZmYy02MDRmYzRmZGNmNzEiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJwcm9maWxlL2ZsdXR0ZXJiaXJkLnBuZyIsImlhdCI6MTc2NTE5NTA1NCwiZXhwIjoyMDgwNTU1MDU0fQ.l87Bbr_w3gsXBxriQWjqQ1CxzxyYwGAJ8vbUl_cl9IU');
-      background-size: cover; background-position: center; background-repeat: no-repeat;
-    }
-    #hero-overlay {
-      position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -9;
-      background: linear-gradient(to bottom, rgba(0,0,0,0.3), rgba(0,0,0,0.7) 70%, rgba(0,0,0,0.95));
-      pointer-events: none;
-    }
-    #bg-canvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -8; pointer-events: none; opacity: 0.4; }
-    
-    #floating-logos { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -7; pointer-events: none; overflow: hidden; }
-    .logo-floater {
-      position: absolute; background-image: var(--flutter-logo-url);
-      background-size: contain; background-repeat: no-repeat; background-position: center;
-      opacity: 0.6; animation: floatAround infinite ease-in-out alternate;
-    }
-    @keyframes floatAround {
-      0% { transform: translate(0px, 0px) rotate(0deg); }
-      50% { transform: translate(60px, 40px) rotate(10deg); }
-      100% { transform: translate(-40px, 80px) rotate(-10deg); }
-    }
-    /* Responsive Logo Sizing */
-    .item-1 { top: 10%; left: 5%; width: 12vw; height: 12vw; min-width: 60px; min-height: 60px; animation-duration: 25s; }
-    .item-2 { top: 75%; left: 85%; width: 9vw; height: 9vw; min-width: 50px; min-height: 50px; animation-duration: 18s; animation-delay: -5s; }
-    .item-3 { top: 40%; left: 60%; width: 6vw; height: 6vw; min-width: 40px; min-height: 40px; animation-duration: 30s; opacity: 0.5; }
-    .item-4 { top: 85%; left: 10%; width: 14vw; height: 14vw; min-width: 70px; min-height: 70px; animation-duration: 22s; animation-delay: -10s; }
-    .item-5 { top: 15%; left: 80%; width: 10vw; height: 10vw; min-width: 50px; min-height: 50px; animation-duration: 20s; animation-delay: -15s; }
+  /* ============ SCROLL PROGRESS ============ */
+  .scroll-progress{ position:fixed; top:52px; left:0; width:100%; height:2px; z-index:199; background:transparent; }
+  .scroll-progress-fill{ height:100%; width:0%; background:linear-gradient(90deg,var(--cyan),var(--purple),var(--amber)); box-shadow:0 0 8px rgba(100,255,218,0.6); transition:width .1s linear; }
 
-    /* --- ANIMATIONS --- */
-    .dash-container { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: -2; overflow: hidden; }
-    .flying-dash {
-      position: absolute; width: 80px; opacity: 0.6; top: 15%;
-      animation: flyPass 25s linear infinite; filter: drop-shadow(0 0 15px rgba(255,255,255,0.4));
-    }
-    @keyframes flyPass {
-      0% { transform: translateX(-150px) translateY(0) rotate(5deg); }
-      100% { transform: translateX(110vw) translateY(0) rotate(5deg); }
-    }
-    
-    #peek-dash {
-      position: fixed; bottom: -10px; right: 20px; width: 140px; z-index: 90;
-      transform: translateY(120%) rotate(10deg); transition: transform 0.8s cubic-bezier(0.68, -0.55, 0.265, 1.55); cursor: pointer;
-    }
-    #peek-dash.visible { transform: translateY(0) rotate(0deg); }
-    #peek-dash:hover { transform: scale(1.1) translateY(-10px); }
-    
-    .dash-bubble {
-      position: fixed; bottom: 120px; right: 40px; background: white; color: black; padding: 10px 15px;
-      border-radius: 15px 15px 0 15px; font-weight: bold; font-size: 14px; z-index: 91;
-      opacity: 0; transform: scale(0); transition: 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-      box-shadow: 0 5px 15px rgba(0,0,0,0.3);
-    }
-    .dash-bubble.visible { opacity: 1; transform: scale(1); }
+  /* ============ TAB BAR (NAV) ============ */
+  .tabbar{
+    position:fixed; top:0; left:0; width:100%; z-index:200;
+    background:var(--panel); border-bottom:1px solid var(--line);
+    display:flex; align-items:stretch; overflow-x:auto; scrollbar-width:none;
+    backdrop-filter: blur(10px);
+  }
+  .tab-indicator{
+    position:absolute; bottom:-1px; height:2px; background:var(--cyan);
+    box-shadow:0 0 8px rgba(100,255,218,0.7); border-radius:2px 2px 0 0;
+    transition: left .35s cubic-bezier(.65,0,.35,1), width .35s cubic-bezier(.65,0,.35,1);
+    left:0; width:0; pointer-events:none;
+  }
+  .tabbar::-webkit-scrollbar{ display:none; }
+  .tabbar .brand{
+    display:flex; align-items:center; gap:8px; padding:0 16px;
+    font-family:var(--mono); font-weight:700; font-size:13px; color:var(--text-dim);
+    border-right:1px solid var(--line); white-space:nowrap; flex-shrink:0;
+  }
+  .tabbar .brand i{ color:var(--cyan); font-size:16px; }
+  .tab{
+    display:flex; align-items:center; gap:8px; padding:0 18px; height:52px;
+    font-family:var(--mono); font-size:13px; color:var(--text-faint);
+    background:var(--panel-alt); border-right:1px solid var(--line);
+    cursor:pointer; white-space:nowrap; flex-shrink:0; text-decoration:none;
+    transition: color .2s ease, background .2s ease;
+    position:relative;
+  }
+  .tab .dot{ width:8px; height:8px; border-radius:2px; flex-shrink:0; }
+  .tab:hover{ color:var(--text); background:#1a202d; }
+  .tab.active{ color:var(--text); background:var(--void); }
 
-    /* Entrance Animation */
-    .fade-in { animation: fadeInUp 0.8s ease backwards; }
-    .delay-1 { animation-delay: 0.1s; }
-    .delay-2 { animation-delay: 0.2s; }
-    .delay-3 { animation-delay: 0.3s; }
-    
-    @keyframes fadeInUp {
-      from { opacity: 0; transform: translateY(20px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
+  /* ============ STATUS BAR (footer) ============ */
+  .statusbar{
+    position:fixed; bottom:0; left:0; width:100%; z-index:200; height:32px;
+    background:var(--vscode-blue); display:flex; align-items:center; justify-content:space-between;
+    padding:0 14px; font-family:var(--mono); font-size:11px; color:#eaf6ff;
+  }
+  .statusbar .left, .statusbar .right{ display:flex; align-items:center; gap:14px; }
+  .statusbar .badge{ display:flex; align-items:center; gap:5px; }
+  .statusbar .pulse-dot{ width:7px; height:7px; border-radius:50%; background:#7CFFB2; box-shadow:0 0 0 rgba(124,255,178,.6); animation: pulseDot 2s infinite; }
+  @keyframes pulseDot{ 0%{box-shadow:0 0 0 0 rgba(124,255,178,.5);} 70%{box-shadow:0 0 0 6px rgba(124,255,178,0);} 100%{box-shadow:0 0 0 0 rgba(124,255,178,0);} }
+  .statusbar a{ text-decoration:none; color:#eaf6ff; opacity:.85; transition:opacity .2s; display:flex; align-items:center; gap:5px; }
+  .statusbar a:hover{ opacity:1; text-decoration:underline; }
+  .statusbar .hide-sm{ display:inline-flex; }
+  @media (max-width:640px){ .statusbar .hide-sm{ display:none; } }
 
-    /* --- LAYOUT & STYLES --- */
-    h1, h2, h3, h4 { font-family: 'Space Grotesk', sans-serif; }
-    
-    .spotlight-card {
-      position: relative; background: var(--card-bg); backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px);
-      border-radius: var(--radius); border: 1px solid var(--card-border); overflow: hidden; box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
-      width: 100%; transition: transform 0.3s ease, box-shadow 0.3s ease;
-    }
-    .spotlight-card:hover { box-shadow: 0 10px 40px rgba(0,0,0,0.2); }
-    
-    .spotlight-card::before {
-      content: ""; position: absolute; inset: 0; border-radius: var(--radius); padding: 1.5px;
-      background: radial-gradient(800px circle at var(--mouse-x) var(--mouse-y), rgba(255, 255, 255, 0.4), transparent 40%);
-      -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0); mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-      -webkit-mask-composite: xor; mask-composite: exclude; pointer-events: none; z-index: 3;
-    }
-    .card-content { position: relative; z-index: 2; padding: 28px; height: 100%; }
+  /* ============ SHARED FILE-WINDOW CHROME ============ */
+  .file-window{
+    position:relative;
+    background:var(--panel); border:1px solid var(--line); border-radius:var(--radius);
+    overflow:hidden; box-shadow:0 20px 60px rgba(0,0,0,0.35);
+    transition: transform .35s ease, border-color .35s ease, box-shadow .35s ease;
+    --mx:50%; --my:50%;
+  }
+  .file-window::after{
+    content:""; position:absolute; inset:0; pointer-events:none; opacity:0; z-index:1;
+    background: radial-gradient(320px circle at var(--mx) var(--my), rgba(100,255,218,0.08), transparent 60%);
+    transition: opacity .3s ease;
+  }
+  .file-window:hover::after{ opacity:1; }
+  .file-window:hover{ border-color:rgba(100,255,218,0.25); box-shadow:0 24px 70px rgba(0,0,0,0.45); }
+  .file-window .chrome{
+    display:flex; align-items:center; gap:8px; padding:11px 16px;
+    background:var(--panel-alt); border-bottom:1px solid var(--line);
+  }
+  .chrome .dots{ display:flex; gap:6px; }
+  .chrome .dots span{ width:11px; height:11px; border-radius:50%; display:block; }
+  .chrome .dots .r{ background:#FF5F57; } .chrome .dots .y{ background:#FEBC2E; } .chrome .dots .g{ background:#28C840; }
+  .chrome .filename{ font-family:var(--mono); font-size:12px; color:var(--text-dim); margin-left:6px; }
 
-    /* === RESPONSIVE WRAPPER === */
-    .wrapper { 
-        max-width: 1200px; 
-        margin: 0 auto; 
-        padding: 60px 20px 140px 20px;
-        display: flex;
-        flex-wrap: wrap;
-        gap: 24px;
-        position: relative; z-index: 2; 
-    }
-    
-    /* Profile takes 380px on desktop, full width on mobile */
-    .profile-section { 
-      flex: 1 1 350px; /* Grow 1, Shrink 1, Base 350px */
-      position: sticky; top: 40px; 
-      height: fit-content; 
-      display: flex; flex-direction: column; gap: 24px; 
-      min-width: 0; /* Prevents overflow */
-    }
-    
-    /* Content takes remaining space, wraps if too narrow */
-    .content-grid { 
-      flex: 999 1 400px; /* Takes priority, wraps if < 400px */
-      display: flex; flex-direction: column; gap: 24px; 
-      min-width: 0; /* Prevents overflow */
-    }
+  section{ max-width:1080px; margin:0 auto; padding:90px 20px; }
+  .section-tag{
+    font-family:var(--mono); font-size:12px; color:var(--purple); letter-spacing:.5px;
+    display:flex; align-items:center; gap:8px; margin-bottom:10px;
+  }
+  .section-tag::before{ content:"//"; color:var(--text-faint); }
+  .section-title{ font-family:var(--mono); font-size:clamp(24px,4vw,32px); font-weight:700; color:#fff; margin:0 0 34px 0; }
 
-    /* Avatar */
-    .avatar-wrapper { position: relative; width: 140px; height: 140px; margin: 0 auto 24px auto; cursor: pointer; }
-    .avatar-box { width: 100%; height: 100%; border-radius: 50%; background-image: url('https://afadvyuogztogdclfjlq.supabase.co/storage/v1/object/sign/profile/Flutterlogo.jpg?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV8zODcyNTRiZi0wNTk0LTQ1NDEtYTZmYy02MDRmYzRmZGNmNzEiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJwcm9maWxlL0ZsdXR0ZXJsb2dvLmpwZyIsImlhdCI6MTc2NTE5MzM1MCwiZXhwIjoyMDgwNTUzMzUwfQ.TxTO6mj_u3WrdNOs0e_vGOYIw_l-STX8_u-fcjdsL30'); background-size: cover; background-position: center; border: 3px solid rgba(255,255,255,0.2); box-shadow: 0 0 30px var(--primary); transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.3s; }
-    .avatar-box.show-face { background-image: url('https://afadvyuogztogdclfjlq.supabase.co/storage/v1/object/sign/profile/DSC_4505.JPG?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV8zODcyNTRiZi0wNTk0LTQ1NDEtYTZmYy02MDRmYzRmZGNmNzEiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJwcm9maWxlL0RTQ180NTA1LkpQRyIsImlhdCI6MTc2NTE3MTE3NCwiZXhwIjoxOTIyODUxMTc0fQ.6olBeoBGVZU_kAcVDykYX37WkHiIDhAns5EQOCEGzt8'); background-position: center 20%; }
-    .avatar-wrapper:hover .avatar-box { transform: scale(1.05); box-shadow: 0 0 50px var(--primary); }
-    .click-hint { position: absolute; bottom: -25px; left: 50%; transform: translateX(-50%); font-size: 10px; background: var(--primary); color: white; padding: 2px 8px; border-radius: 10px; opacity: 0; transition: 0.3s; white-space: nowrap; pointer-events: none; }
-    .avatar-wrapper:hover .click-hint { opacity: 1; bottom: -10px; }
-    
-    /* Fluid Typography */
-    .glitch-name { 
-        font-size: clamp(32px, 5vw, 48px); 
-        font-weight: 800; text-align: center; margin: 0; 
-        background: linear-gradient(135deg, #fff 40%, var(--text-muted)); 
-        -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-        text-shadow: 0 0 20px rgba(99, 102, 241, 0.3);
-    }
-    .animated-role { 
-        text-align: center; font-size: clamp(16px, 3vw, 18px); font-weight: 600; margin-top: 8px; 
-        background: linear-gradient(270deg, var(--highlight), var(--primary), var(--accent)); 
-        background-size: 200% 200%; -webkit-background-clip: text; color: transparent; 
-        animation: gradientFlow 4s ease infinite; letter-spacing: 1px;
-    }
-    @keyframes gradientFlow { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
-    .bio-text { text-align: center; color: var(--text-muted); line-height: 1.7; margin: 20px 0; font-weight: 400; font-size: 15px; }
+  .reveal{ opacity:0; transform:translateY(28px); transition: opacity .8s cubic-bezier(.16,1,.3,1), transform .8s cubic-bezier(.16,1,.3,1); }
+  .reveal.in{ opacity:1; transform:translateY(0); }
 
-    /* Headers */
-    h2 { 
-        font-size: clamp(20px, 4vw, 22px); margin: 0 0 24px 0; 
-        display: flex; align-items: center; gap: 12px; 
-        color: #fff; font-weight: 700; letter-spacing: 0.5px;
-        background: linear-gradient(90deg, #fff, #94a3b8);
-        -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-    }
-    h2 i { color: var(--highlight); font-size: 26px; -webkit-text-fill-color: initial; filter: drop-shadow(0 0 8px var(--primary)); }
+  /* ============ HERO ============ */
+  .hero{ padding-top:64px; }
+  .hero-grid{ display:flex; gap:28px; align-items:stretch; flex-wrap:wrap; }
+  .hero-code{ flex:1 1 460px; min-width:0; }
+  .hero-code .body{ padding:24px 22px 28px; font-family:var(--mono); font-size:14.5px; line-height:1.85; }
+  .ln{ color:var(--text-faint); display:inline-block; width:22px; user-select:none; }
+  .kw{ color:var(--purple); } .cls{ color:var(--amber); } .str{ color:#A8D479; } .fn{ color:var(--cyan); } .cm{ color:var(--text-faint); font-style:italic;}
+  .caret{ display:inline-block; width:8px; height:17px; background:var(--cyan); vertical-align:-3px; animation: blink 1s step-end infinite; }
+  @keyframes blink{ 50%{ opacity:0; } }
 
-    /* Social Links */
-    .social-links { display: flex; justify-content: center; gap: 12px; margin-top: 24px; flex-wrap: wrap; }
-    .social-btn { 
-      width: 44px; height: 44px; border-radius: 12px; 
-      background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);
-      display: flex; align-items: center; justify-content: flex-start;
-      padding-left: 11px; font-size: 20px; color: var(--text); text-decoration: none;
-      transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); 
-      overflow: hidden; white-space: nowrap; position: relative;
-    }
-    .social-btn i { min-width: 20px; text-align: center; }
-    .social-label { opacity: 0; margin-left: 10px; font-size: 14px; font-weight: 600; transform: translateX(20px); transition: all 0.3s ease; }
-    .social-btn:hover { width: 120px; background: var(--primary); color: white; border-color: var(--primary); transform: translateY(-3px); box-shadow: 0 5px 15px rgba(99, 102, 241, 0.4); }
-    .social-btn:hover .social-label { opacity: 1; transform: translateX(0); }
+  .hero-preview{ flex:1 1 280px; min-width:0; display:flex; flex-direction:column; gap:14px; align-items:center; justify-content:center; }
+  .sim-chrome{ display:flex; align-items:center; justify-content:space-between; width:100%; max-width:280px; font-family:var(--mono); font-size:10.5px; color:var(--text-faint); padding:0 4px; }
+  .hot-badge{ display:flex; align-items:center; gap:6px; background:rgba(100,255,218,0.1); border:1px solid rgba(100,255,218,0.3); color:var(--cyan); padding:3px 9px; border-radius:99px; font-weight:600; }
+  .hot-badge i{ animation: flash 1.6s ease-in-out infinite; }
+  @keyframes flash{ 0%,100%{ opacity:1; } 50%{ opacity:.35; } }
 
-    /* --- PROJECTS SCROLLABLE --- */
-    .scroller-header h3 { 
-        margin: 0 0 8px 0; font-size: 20px; font-weight: 700;
-        background: linear-gradient(90deg, #fff, #cbd5e1);
-        -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-    }
-    .scroller-header p { color: var(--text-muted); font-size: 15px; margin: 0; line-height: 1.6; }
-    
-    .phone-scroller { 
-      display: flex; gap: 15px; overflow-x: auto; 
-      padding: 10px 0 20px 0; 
-      scroll-snap-type: x mandatory; 
-      -webkit-overflow-scrolling: touch; 
-      scrollbar-width: none; 
-    }
-    .phone-scroller::-webkit-scrollbar { display: none; }
-    
-    .phone-screen { 
-      flex: 0 0 auto; width: 140px; height: 280px; 
-      border-radius: 14px; overflow: hidden; 
-      border: 2px solid rgba(255,255,255,0.1); 
-      position: relative; background: #000;
-      scroll-snap-align: start; 
-    }
-    .phone-screen img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.3s ease; }
-    .phone-screen:hover { transform: scale(1.05); border-color: var(--highlight); z-index: 10; box-shadow: 0 10px 20px rgba(0,0,0,0.5); }
-    
-    .project-link { 
-        color: var(--highlight); text-decoration: none; font-weight: 600; font-size: 14px; 
-        display: inline-flex; align-items: center; gap: 6px; transition: 0.2s; margin-top: 15px;
-    }
-    .project-link:hover { color: #fff; transform: translateX(5px); }
+  .device{ position:relative; width:240px; height:490px; background:#05070c; border-radius:42px; border:5px solid #202634; box-shadow:0 35px 90px rgba(0,0,0,.65), inset 0 0 0 2px rgba(255,255,255,.05); overflow:hidden; }
+.device:after{content:'';position:absolute;top:10px;left:50%;transform:translateX(-50%);width:90px;height:24px;background:#000;border-radius:20px;z-index:10;box-shadow:0 2px 8px rgba(0,0,0,.8)}
+  .device::before{ content:""; position:absolute; top:14px; left:50%; transform:translateX(-50%); width:76px; height:20px; background:#000; border-radius:12px; z-index:5; }
+  .device img{ width:100%; height:100%; object-fit:cover; }
 
-    /* Skills & Services */
-    .skill-tags { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 15px; }
-    .skill-tag {
-      font-size: 13px; padding: 6px 12px;
-      background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.1);
-      border-radius: 8px; color: var(--text-muted); transition: 0.2s; cursor: default;
-    }
-    .skill-tag:hover { background: rgba(99, 102, 241, 0.2); color: white; border-color: var(--primary); transform: translateY(-2px); }
-    
-    .skill-row { display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 14px; font-weight: 500; color: #fff; }
-    .skill-bar-bg { width: 100%; height: 6px; background: rgba(255,255,255,0.1); border-radius: 99px; margin-bottom: 16px; overflow: hidden; }
-    .skill-bar-fill { height: 100%; background: linear-gradient(90deg, var(--primary), var(--highlight)); border-radius: 99px; transition: width 1s ease; }
-    
-    .process-grid, .services-grid { 
-        display: grid; 
-        /* Auto-fit columns: nice on desktop, snaps to 2 or 1 on mobile */
-        grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); 
-        gap: 12px; 
-    }
-    
-    .service-item, .process-step { 
-      padding: 20px; 
-      background: rgba(255,255,255,0.03); 
-      border-radius: 16px; 
-      border: 1px solid rgba(255,255,255,0.05); 
-      transition: 0.2s;
-      /* --- CENTER ICONS & TEXT --- */
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      text-align: center;
-    }
-    .service-item:hover, .process-step:hover { background: rgba(255,255,255,0.08); transform: translateY(-3px); border-color: var(--highlight); }
-    .process-step i, .service-item i { font-size: 28px; color: var(--accent); margin-bottom: 8px; display: block; }
-    .service-item i { color: var(--highlight); }
-    .service-item strong { color: #fff; font-size: 16px; display:block; margin-bottom:4px; }
-    .service-item p { margin: 0; font-size: 13px; color: var(--text-muted); }
-    
-    /* Form */
-    .input-group input, .input-group textarea { 
-        width: 100%; background: rgba(0,0,0,0.3); border: 1px solid var(--card-border); 
-        padding: 16px; border-radius: 14px; color: white; font-family: inherit; transition: 0.3s; margin-bottom:12px;
-    }
-    .input-group input:focus, .input-group textarea:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15); background: rgba(0,0,0,0.5); }
-    .submit-btn { width: 100%; background: white; color: black; border: none; padding: 16px; border-radius: 14px; font-weight: 700; cursor: pointer; transition: 0.2s; font-size: 16px; }
-    .submit-btn:hover { background: var(--highlight); transform: translateY(-2px); box-shadow: 0 5px 20px rgba(34, 211, 238, 0.3); }
-    
-    /* Floating UI */
-    .magic-btn { position: fixed; bottom: 30px; right: 30px; z-index: 101; width: 50px; height: 50px; border-radius: 50%; background: var(--card-bg); border: 1px solid var(--card-border); color: var(--highlight); font-size: 24px; cursor: pointer; display: flex; align-items: center; justify-content: center; box-shadow: 0 10px 30px rgba(0,0,0,0.5); backdrop-filter: blur(10px); transition: transform 0.3s; }
-    .magic-btn:hover { transform: rotate(90deg) scale(1.1); color: white; background: var(--primary); }
-    
-    .dock-wrapper { position: fixed; bottom: 30px; left: 0; width: 100%; display: flex; justify-content: center; z-index: 100; pointer-events: none; }
-    .dock { background: rgba(10, 10, 10, 0.8); backdrop-filter: blur(20px); padding: 10px; border-radius: 24px; border: 1px solid rgba(255,255,255,0.1); display: flex; gap: 10px; pointer-events: auto; box-shadow: 0 15px 40px rgba(0,0,0,0.6); }
-    .dock-icon { width: 48px; height: 48px; border-radius: 16px; display: flex; align-items: center; justify-content: center; color: var(--text-muted); font-size: 24px; transition: 0.2s; text-decoration: none; position: relative; }
-    .dock-icon:hover { background: rgba(255,255,255,0.1); color: white; transform: translateY(-5px); }
-    .dock-icon.active { color: var(--highlight); background: rgba(255,255,255,0.08); }
-    
-    /* POPUP STYLES */
-    .custom-popup-overlay {
-        position: fixed; inset: 0; background: rgba(0,0,0,0.6); backdrop-filter: blur(10px); 
-        display: flex; align-items: center; justify-content: center; z-index: 9999; animation: fadeIn 0.3s ease;
-    }
-    .custom-popup-box {
-        position: relative; background: var(--card-bg); border: 1px solid var(--card-border);
-        color: white; padding: 40px 30px; border-radius: 24px; text-align: center; width: 90%; max-width: 400px;
-        box-shadow: 0 20px 50px rgba(0,0,0,0.5); animation: slideUp 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-        overflow: hidden; display: flex; flex-direction: column; align-items: center;
-    }
-    .custom-popup-bg-effect {
-        position: absolute; top: -50%; left: -50%; width: 200%; height: 200%; 
-        background: radial-gradient(circle, var(--primary) 0%, transparent 60%); 
-        opacity: 0.15; animation: rotate 10s linear infinite; pointer-events: none;
-    }
-    .popup-icon-container {
-        position: relative; width: 80px; height: 80px; margin: 0 auto 20px auto; 
-        background: rgba(255,255,255,0.05); border-radius: 50%; 
-        display: flex; align-items: center; justify-content: center;
-    }
-    .popup-title { margin: 0 0 8px; font-size: 24px; color: white; position: relative; width: 100%; }
-    .popup-message { margin: 0 0 24px; font-size: 15px; color: var(--text-muted); line-height: 1.5; position: relative; width: 100%; }
-    .popup-btn {
-        width: 100%; padding: 14px; border: none; border-radius: 14px; 
-        background: linear-gradient(90deg, var(--primary), var(--highlight)); 
-        color: white; font-weight: 700; font-size: 16px; cursor: pointer; transition: transform 0.2s; position: relative;
-    }
-    .popup-btn:hover { transform: scale(1.02); }
+  .hero-actions{ display:flex; gap:12px; flex-wrap:wrap; margin-top:28px; }
+  .btn{ font-family:var(--mono); font-size:13.5px; font-weight:600; padding:13px 22px; border-radius:9px; text-decoration:none; display:inline-flex; align-items:center; gap:8px; transition: transform .2s, box-shadow .2s, background .2s; cursor:pointer; border:1px solid transparent; }
+  .btn-solid{ background:var(--cyan); color:#04211c; }
+  .btn-solid:hover{ transform:translateY(-2px); box-shadow:0 10px 24px rgba(100,255,218,0.25); }
+  .btn-ghost{ border-color:var(--line); color:var(--text); background:transparent; }
+  .btn-ghost:hover{ border-color:var(--cyan); color:var(--cyan); transform:translateY(-2px); }
 
-    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-    @keyframes slideUp { from { transform: scale(0.8) translateY(20px); opacity: 0; } to { transform: scale(1) translateY(0); opacity: 1; } }
-    @keyframes rotate { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
-    @keyframes stroke { 100% { stroke-dashoffset: 0; } }
+  /* ============ PUBSPEC / SKILLS ============ */
+  .yaml-body{ padding:26px 26px 30px; font-family:var(--mono); font-size:14px; line-height:2.05; overflow-x:auto; }
+  .yaml-key{ color:var(--purple); } .yaml-str{ color:#A8D479; } .yaml-ver{ color:var(--amber); } .yaml-cm{ color:var(--text-faint); }
+  .dep-row{ display:flex; gap:10px; flex-wrap:wrap; padding:2px 0; border-radius:6px; transition:background .15s; }
+  .dep-row:hover{ background:rgba(255,255,255,0.035); }
+  .dep-name{ color:#8AB4F8; min-width:190px; }
+  .indent{ padding-left:26px; }
 
-    /* --- MOBILE ADJUSTMENTS --- */
-    @media (max-width: 900px) {
-      .profile-section { position: static; margin-bottom: 30px; }
-      .phone-screen { width: 130px; height: 260px; }
-      .dock-wrapper { bottom: 20px; }
-      .magic-btn { bottom: 90px; right: 20px; width: 45px; height: 45px; font-size: 22px; }
-      .dash-bubble { display: none; } 
-    }
-    @media (max-width: 480px) {
-      .wrapper { padding: 20px 15px 120px 15px; }
-      .avatar-wrapper { width: 120px; height: 120px; }
-      .card-content { padding: 20px; }
-      /* Ensure single column on very small phones */
-      .services-grid, .process-grid { grid-template-columns: 1fr; }
-      .phone-screen { width: 120px; height: 240px; }
-      .flying-dash { width: 50px; opacity: 0.5; }
-      #peek-dash { width: 100px; right: 10px; }
-      .glitch-name { font-size: 32px; }
-    }
-  </style>
+  /* ============ PROJECTS / SIMULATOR ============ */
+  .project-block{ margin-bottom:30px; }
+  .project-block .chrome .filename{ margin-left:auto; margin-right:0; }
+  .project-block .chrome .sim-label{ display:flex; align-items:center; gap:6px; font-family:var(--mono); font-size:11px; color:var(--text-faint); margin-left:auto; }
+  .project-body{ padding:22px 24px 26px; }
+  .project-body h3{ margin:0 0 6px; font-family:var(--mono); font-size:18px; color:#fff; }
+  .project-body p{ margin:0 0 18px; color:var(--text-dim); font-size:14.5px; line-height:1.65; max-width:640px; }
+  .phone-scroller{ display:flex; gap:14px; overflow-x:auto; padding:4px 2px 12px; scroll-snap-type:x mandatory; -webkit-overflow-scrolling:touch; scrollbar-width:thin; }
+  .phone-screen{ flex:0 0 auto; width:140px; height:280px; border-radius:16px; overflow:hidden; border:2px solid var(--line); position:relative; background:#000; scroll-snap-align:start; transition: transform .3s cubic-bezier(.16,1,.3,1), border-color .3s, box-shadow .3s; }
+  .phone-screen:hover{ transform:translateY(-6px) scale(1.02); border-color:var(--cyan); box-shadow:0 14px 30px rgba(0,0,0,.4), 0 0 0 1px rgba(100,255,218,0.15); }
+  .phone-screen img{ width:100%; height:100%; object-fit:cover; }
+  .project-link{ color:var(--cyan); text-decoration:none; font-weight:600; font-size:13.5px; font-family:var(--mono); display:inline-flex; align-items:center; gap:6px; transition:.2s; }
+  .project-link:hover{ gap:10px; }
+
+  /* ============ TERMINAL / SERVICES ============ */
+  .term-body{ padding:24px 26px 30px; font-family:var(--mono); font-size:14px; line-height:2.1; }
+  .term-prompt{ color:var(--cyan); }
+  .term-cmd{ color:var(--text); }
+  .term-line{ display:flex; gap:10px; align-items:baseline; flex-wrap:wrap; padding:3px 0; }
+  .check{ color:#7CFFB2; }
+  .term-label{ color:var(--text); }
+  .term-desc{ color:var(--text-faint); }
+
+  /* ============ CONSOLE / CONTACT ============ */
+  .console-body{ padding:26px 26px 30px; }
+  .console-line{ font-family:var(--mono); font-size:13px; color:var(--text-faint); margin-bottom:18px; }
+  .console-line .kw{ color:var(--purple); } .console-line .fn{ color:var(--cyan); }
+  .input-row{ display:flex; align-items:center; gap:10px; margin-bottom:14px; font-family:var(--mono); }
+  .input-row .prompt{ color:var(--cyan); font-size:14px; flex-shrink:0; }
+  .input-row input, .input-row textarea{
+    flex:1; width:100%; background:transparent; border:none; border-bottom:1px solid var(--line);
+    color:var(--text); font-family:var(--mono); font-size:14px; padding:8px 2px; outline:none; resize:vertical;
+    transition:border-color .2s;
+  }
+  .input-row input:focus, .input-row textarea:focus{ border-color:var(--cyan); }
+  .input-row textarea{ min-height:70px; padding-top:8px; }
+  .run-btn{ font-family:var(--mono); font-weight:700; font-size:13.5px; background:var(--cyan); color:#04211c; border:none; padding:12px 24px; border-radius:8px; cursor:pointer; display:inline-flex; align-items:center; gap:8px; transition: transform .2s, box-shadow .2s; margin-top:6px; }
+  .run-btn:hover{ transform:translateY(-2px); box-shadow:0 10px 24px rgba(100,255,218,0.25); }
+  .run-btn:disabled{ opacity:.5; cursor:not-allowed; transform:none; box-shadow:none; }
+  #status{ font-family:var(--mono); font-size:12.5px; margin-top:12px; }
+
+  /* ============ POPUP ============ */
+  .popup-overlay{ position:fixed; inset:0; background:rgba(2,4,8,0.7); backdrop-filter:blur(6px); display:flex; align-items:center; justify-content:center; z-index:9999; animation:fadeIn .25s ease; padding:20px; }
+  .popup-box{ background:linear-gradient(145deg,#151b29,#090d15); border:1px solid rgba(100,255,218,.25); border-radius:22px; width:100%; max-width:380px; overflow:hidden; box-shadow:0 30px 70px rgba(0,0,0,0.5); animation:slideUp .35s cubic-bezier(.175,.885,.32,1.275); }
+  .popup-box .chrome{ justify-content:space-between; }
+  .popup-box .body{ padding:26px 24px 28px; text-align:center; font-family:var(--sans); }
+  .popup-box .icon{ width:70px; height:52px; margin:0 auto 16px; border-radius:50%; background:rgba(100,255,218,0.1); display:flex; align-items:center; justify-content:center; }
+  .popup-box h3{ margin:0 0 8px; color:#fff; font-family:var(--mono); font-size:19px; }
+  .popup-box p{ margin:0 0 22px; color:var(--text-dim); font-size:14px; line-height:1.6; }
+  .popup-box p strong{ color:var(--text); }
+  @keyframes fadeIn{ from{opacity:0;} to{opacity:1;} }
+  @keyframes slideUp{ from{ transform:translateY(24px) scale(.96); opacity:0; } to{ transform:translateY(0) scale(1); opacity:1; } }
+
+  footer{ text-align:center; padding:40px 20px 70px; font-family:var(--mono); font-size:12px; color:var(--text-faint); }
+
+  .phone-scroller{ scrollbar-color: var(--cyan) transparent; }
+  .phone-scroller::-webkit-scrollbar{ height:5px; }
+  .phone-scroller::-webkit-scrollbar-thumb{ background:rgba(100,255,218,0.35); border-radius:99px; }
+  .phone-scroller::-webkit-scrollbar-track{ background:transparent; }
+
+  .device{ transition: transform .25s ease; transform-style:preserve-3d; will-change:transform; }
+  .btn, .run-btn{ will-change:transform; }
+
+  @media (max-width:900px){
+    .hero-grid{ gap:20px; }
+  }
+  @media (max-width:720px){
+    section{ padding:56px 16px; }
+    .device{ width:200px; height:410px; }
+    .hero{ padding-top:44px; }
+    .aurora{ filter:blur(60px); opacity:.25; }
+  }
+  @media (max-width:480px){
+    .tabbar .brand{ padding:0 12px; font-size:12px; }
+    .tab{ padding:0 13px; font-size:12px; height:46px; }
+    .tabbar{ }
+    body{ padding-top:46px; }
+    .scroll-progress{ top:46px; }
+    section{ padding:44px 14px; }
+    .section-title{ margin-bottom:24px; }
+    .device{ width:168px; height:346px; }
+    .hero-code .body{ padding:18px 16px 22px; font-size:13px; }
+    .yaml-body, .term-body{ padding:20px 16px 24px; font-size:12.5px; }
+    .console-body{ padding:20px 16px 24px; }
+    .phone-screen{ width:120px; height:240px; }
+    .statusbar{ font-size:10px; padding:0 10px; gap:8px; }
+    .statusbar .left, .statusbar .right{ gap:10px; }
+    .hero-actions{ gap:9px; }
+    .btn{ font-size:12.5px; padding:11px 16px; }
+    .device::before{ width:60px; height:16px; top:10px; }
+  }
+  @media (max-width:360px){
+    .device{ width:150px; height:310px; }
+    .phone-screen{ width:108px; height:216px; }
+  }
+
+  .ai-phone-ui{position:relative;height:100%;width:100%;overflow:hidden;background:linear-gradient(180deg,#101827,#05070c);display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;color:#fff;font-family:var(--mono);}
+  .ai-glow{position:absolute;width:210px;height:210px;border-radius:50%;background:conic-gradient(var(--cyan),var(--purple),var(--cyan));filter:blur(60px);opacity:.28;animation:aiPulse 4s infinite;}
+  .ai-status{position:absolute;top:55px;font-size:9px;color:#7CFFB2;letter-spacing:2px;}
+  .ai-orb{width:105px;height:105px;border-radius:50%;background:linear-gradient(135deg,var(--cyan),var(--purple));display:flex;align-items:center;justify-content:center;box-shadow:0 0 45px rgba(100,255,218,.7);animation:floatOrb 3s ease-in-out infinite;z-index:2;}
+  .ai-orb span{width:65px;height:65px;border-radius:50%;background:#07101c;border:2px solid rgba(255,255,255,.35);position:relative;}
+  .ai-orb span:before{content:'AI';position:absolute;inset:0;display:grid;place-items:center;color:white;font-weight:800;font-size:18px;}
+  .ai-phone-ui h3{margin:22px 0 5px;font-size:20px;z-index:2;}
+  .ai-phone-ui p{margin:0;color:#a8b4c8;font-size:11px;z-index:2;}
+  .ai-cards{margin-top:25px;display:grid;grid-template-columns:1fr 1fr;gap:8px;width:82%;z-index:2;}
+  .ai-cards div{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.14);padding:10px 5px;border-radius:14px;font-size:10px;backdrop-filter:blur(14px);}
+  @keyframes aiPulse{50%{transform:scale(1.15);opacity:.45}}
+  @keyframes floatOrb{50%{transform:translateY(-10px)}}
+</style>
 </head>
 <body>
+<!-- Legacy portfolio image links preserved from old portfolio -->
+<div style="display:none" aria-hidden="true">
+  <img src="https://afadvyuogztogdclfjlq.supabase.co/storage/v1/object/sign/profile/flutterlogofloa.png?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV8zODcyNTRiZi0wNTk0LTQ1NDEtYTZmYy02MDRmYzRmZGNmNzEiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJwcm9maWxlL2ZsdXR0ZXJsb2dvZmxvYS5wbmciLCJpYXQiOjE3NjUxOTgzNTYsImV4cCI6MjA4MDU1ODM1Nn0.EcdLWMdX3PuhBtyx6NHdXiWiVnwkuGXZtzPdjQFLhx0" alt="">
+  <img src="https://afadvyuogztogdclfjlq.supabase.co/storage/v1/object/sign/profile/flutterbird.png?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV8zODcyNTRiZi0wNTk0LTQ1NDEtYTZmYy02MDRmYzRmZGNmNzEiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJwcm9maWxlL2ZsdXR0ZXJiaXJkLnBuZyIsImlhdCI6MTc2NTE5NTA1NCwiZXhwIjoyMDgwNTU1MDU0fQ.l87Bbr_w3gsXBxriQWjqQ1CxzxyYwGAJ8vbUl_cl9IU" alt="">
+  <img src="https://storage.googleapis.com/cms-storage-bucket/4fd5520fe28ebf839174.svg" alt="">
+  <img src="https://storage.googleapis.com/cms-storage-bucket/847ae81f5430402216fd.png" alt="">
+  <img src="https://afadvyuogztogdclfjlq.supabase.co/storage/v1/object/sign/project%20images/Screenshot_1765262665.png?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV8zODcyNTRiZi0wNTk0LTQ1NDEtYTZmYy02MDRmYzRmZGNmNzEiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJwcm9qZWN0IGltYWdlcy9TY3JlZW5zaG90XzE3NjUyNjI2NjUucG5nIiwiaWF0IjoxNzY1MjYzMzYwLCJleHAiOjIwODA2MjMzNjB9.KWC0106ogGN97xvgOcr2qwcn_DMKVKt6MXXD35Rs6hA" alt="">
+  <img src="https://afadvyuogztogdclfjlq.supabase.co/storage/v1/object/sign/project%20images/Screenshot_1765262811.png?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV8zODcyNTRiZi0wNTk0LTQ1NDEtYTZmYy02MDRmYzRmZGNmNzEiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJwcm9qZWN0IGltYWdlcy9TY3JlZW5zaG90XzE3NjUyNjI4MTEucG5nIiwiaWF0IjoxNzY1MjYzMzMxLCJleHAiOjIwODA2MjMzMzF9.Zf2T3YlzzyvGfWLiqR7LA2-SPwlG0kNIVL7iknVtdo4" alt="">
+  <img src="https://afadvyuogztogdclfjlq.supabase.co/storage/v1/object/sign/project%20images/Screenshot_1762066188.png?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV8zODcyNTRiZi0wNTk0LTQ1NDEtYTZmYy02MDRmYzRmZGNmNzEiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJwcm9qZWN0IGltYWdlcy9TY3JlZW5zaG90XzE3NjIwNjYxODgucG5nIiwiaWF0IjoxNzYyMDY4OTcwLCJleHAiOjIwNzc0Mjg5NzB9.LjfST-BA5Jlkg0m9OuNfB3PC4iK6atP8YeOF8xvL234" alt="">
+</div>
 
-  <div id="hero-bg"></div>
-  <div id="hero-overlay"></div>
-  <canvas id="bg-canvas"></canvas>
 
-  <div id="floating-logos">
-     <div class="logo-floater item-1"></div>
-     <div class="logo-floater item-2"></div>
-     <div class="logo-floater item-3"></div>
-     <div class="logo-floater item-4"></div>
-     <div class="logo-floater item-5"></div>
+  <!-- BOOT LOADER -->
+  <div class="boot-loader" id="bootLoader">
+    <div class="boot-text">
+      <span class="boot-line">&gt; booting <span style="color:var(--cyan)">ashraf.dev</span><span class="boot-dots"></span></span>
+      <div class="boot-bar"><div class="boot-bar-fill"></div></div>
+    </div>
   </div>
 
-  <div class="dash-container">
-    <img src="https://storage.googleapis.com/cms-storage-bucket/4fd5520fe28ebf839174.svg" alt="Flying Dash" class="flying-dash">
-  </div>
+  <!-- AMBIENT CANVAS -->
+  <canvas id="netCanvas"></canvas>
+  <div class="aurora aurora-1"></div>
+  <div class="aurora aurora-2"></div>
 
-  <div class="dash-bubble" id="dashBubble">Need a Developer?</div>
-  <img id="peek-dash" src="https://storage.googleapis.com/cms-storage-bucket/847ae81f5430402216fd.png" alt="Peeking Dash" onclick="triggerPeek(true)">
+  <!-- SCROLL PROGRESS -->
+  <div class="scroll-progress"><div class="scroll-progress-fill" id="scrollFill"></div></div>
 
-  <button class="magic-btn" onclick="randomizeTheme()" title="Change Theme">
-    <i class="ph ph-magic-wand"></i>
-  </button>
+  <!-- TAB BAR -->
+  <nav class="tabbar" id="tabbar">
+    <div class="brand"><i class="ph ph-flutter-logo" style="display:none"></i><i class="ph ph-code"></i>ashraf@dev</div>
+    <a href="#hero" class="tab active" data-target="hero"><span class="dot" style="background:var(--cyan)"></span>main.dart</a>
+    <a href="#skills" class="tab" data-target="skills"><span class="dot" style="background:var(--amber)"></span>pubspec.yaml</a>
+    <a href="#projects" class="tab" data-target="projects"><span class="dot" style="background:var(--purple)"></span>projects.dart</a>
+    <a href="#services" class="tab" data-target="services"><span class="dot" style="background:#7CFFB2"></span>terminal</a>
+    <a href="#contact" class="tab" data-target="contact"><span class="dot" style="background:var(--rose)"></span>contact.dart</a>
+    <span class="tab-indicator" id="tabIndicator"></span>
+  </nav>
 
-  <div class="wrapper">
-    
-    <aside class="profile-section fade-in">
-      <div class="spotlight-card">
-        <div class="card-content" style="text-align: center;">
-          
-          <div class="avatar-wrapper" onclick="this.querySelector('.avatar-box').classList.toggle('show-face')">
-            <div class="avatar-box"></div>
-            <div class="click-hint">Click to Reveal</div>
-          </div>
-
-          <h1 class="glitch-name">Ashraf</h1>
-          <div class="animated-role">Flutter Developer</div>
-          
-          <div style="margin-top: 20px; display:inline-block; font-size:12px; font-weight:600; padding: 6px 16px; border-radius:99px; background:rgba(34, 197, 94, 0.15); color:#4ade80; border:1px solid rgba(34, 197, 94, 0.3); backdrop-filter:blur(5px); letter-spacing:0.5px;">
-            ● Open for Work
-          </div>
-
-          <p class="bio-text">
-            I build pixel-perfect, buttery smooth mobile applications that solve real problems.
-          </p>
-          
-          <div class="social-links">
-            <a href="https://github.com/sisodiyaashraf" target="_blank" class="social-btn">
-              <i class="ph ph-github-logo"></i>
-              <span class="social-label">GitHub</span>
-            </a>
-            <a href="mailto:ashrafsisodiya478@gmail.com" class="social-btn">
-              <i class="ph ph-envelope-simple"></i>
-              <span class="social-label">Mail</span>
-            </a>
-            <a href="https://afadvyuogztogdclfjlq.supabase.co/storage/v1/object/public/resume/Resume.pdf" target="_blank" class="social-btn">
-              <i class="ph ph-file-text"></i>
-              <span class="social-label">Resume</span>
-            </a>
-            <a href="https://wa.me/919530273440" target="_blank" class="social-btn">
-              <i class="ph ph-whatsapp-logo"></i>
-              <span class="social-label">WhatsApp</span>
-            </a>
-          </div>
+  <!-- HERO -->
+  <section class="hero" id="hero">
+    <div class="hero-grid">
+      <div class="file-window hero-code reveal">
+        <div class="chrome">
+          <div class="dots"><span class="r"></span><span class="y"></span><span class="g"></span></div>
+          <span class="filename">main.dart</span>
         </div>
+        <div class="body" id="typedCode"></div>
       </div>
 
-      <div class="spotlight-card delay-1">
-        <div class="card-content">
-          <h2><i class="ph ph-cpu"></i> Expertise</h2>
-          
-          <div class="skill-row"><span>Flutter / Dart</span><span>95%</span></div>
-          <div class="skill-bar-bg"><div class="skill-bar-fill" style="width: 95%;"></div></div>
-          
-          <div class="skill-row"><span>Supabase / Firebase</span><span>85%</span></div>
-          <div class="skill-bar-bg"><div class="skill-bar-fill" style="width: 85%;"></div></div>
-          
-          <div class="skill-row"><span>State Mgmt</span><span>90%</span></div>
-          <div class="skill-bar-bg"><div class="skill-bar-fill" style="width: 90%;"></div></div>
-
-          <div style="margin: 24px 0; border-top: 1px solid var(--card-border);"></div>
-
-          <div class="skill-tags">
-            <span class="skill-tag">RESTful API</span>
-            <span class="skill-tag">Firebase</span>
-            <span class="skill-tag">Supabase</span>
-            <span class="skill-tag">Provider</span>
-            <span class="skill-tag">Animations</span>
-            <span class="skill-tag">Responsive UI</span>
-            <span class="skill-tag">Clean Architecture</span>
-            <span class="skill-tag">MVVM</span>
-            <span class="skill-tag">Git/GitHub</span>
+      <div class="hero-preview reveal">
+        <div class="sim-chrome">
+          <span>● Pixel 8 · API 34</span>
+          <span class="hot-badge"><i class="ph ph-lightning"></i> Hot Reload</span>
+        </div>
+        <div class="device">
+          <div class="ai-phone-ui">
+            <div class="ai-glow"></div>
+            <div class="ai-status">AI SYSTEM ONLINE</div>
+            <div class="ai-orb">
+              <span></span>
+            </div>
+            <h3>ASHRAF AI</h3>
+            <p>Flutter • AI • Innovation</p>
+            <div class="ai-cards">
+              <div>⚡ Smart Apps</div>
+              <div>🤖 GenAI Ready</div>
+              <div>☁ Cloud Native</div>
+            </div>
           </div>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px;font-family:var(--mono);font-size:11px;color:var(--text-faint)">
+          <span class="pulse-dot" style="background:#7CFFB2;width:7px;height:7px;border-radius:50%;display:inline-block"></span> tap avatar to reveal
         </div>
       </div>
-    </aside>
+    </div>
 
-    <main class="content-grid fade-in delay-2">
-      
-      <section class="spotlight-card">
-        <div class="card-content">
-          <h2><i class="ph ph-steps"></i> How I Work</h2>
-          <div class="process-grid">
-            <div class="process-step">
-              <i class="ph ph-lightbulb"></i>
-              <span>Discovery</span>
-            </div>
-            <div class="process-step">
-              <i class="ph ph-paint-brush-broad"></i>
-              <span>Design</span>
-            </div>
-            <div class="process-step">
-              <i class="ph ph-rocket-launch"></i>
-              <span>Deploy</span>
-            </div>
-          </div>
+    <div class="hero-actions reveal">
+      <a href="#projects" class="btn btn-solid"><i class="ph ph-play"></i> View Projects</a>
+      <a href="https://afadvyuogztogdclfjlq.supabase.co/storage/v1/object/public/resume/Resume.pdf" target="_blank" class="btn btn-ghost"><i class="ph ph-file-arrow-down"></i> Resume</a>
+      <a href="#contact" class="btn btn-ghost"><i class="ph ph-terminal-window"></i> Hire Me</a>
+    </div>
+  </section>
+
+  <!-- SKILLS as pubspec.yaml -->
+  <section id="skills">
+    <div class="section-tag">skills.declared</div>
+    <h2 class="section-title">What's in the pubspec</h2>
+    <div class="file-window reveal">
+      <div class="chrome">
+        <div class="dots"><span class="r"></span><span class="y"></span><span class="g"></span></div>
+        <span class="filename">pubspec.yaml</span>
+      </div>
+      <div class="yaml-body">
+        <div><span class="yaml-key">name:</span> <span class="yaml-str">ashraf_portfolio</span></div>
+        <div><span class="yaml-key">description:</span> <span class="yaml-str">"Flutter developer, obsessed with buttery-smooth UX"</span></div>
+        <div>&nbsp;</div>
+        <div><span class="yaml-key">environment:</span></div>
+        <div class="indent"><span class="yaml-key">sdk:</span> <span class="yaml-ver">'&gt;=stable &lt;forever'</span></div>
+        <div>&nbsp;</div>
+        <div><span class="yaml-key">dependencies:</span></div>
+        <div class="dep-row indent"><span class="dep-name">flutter_dart:</span><span class="yaml-ver">^9.5.0</span><span class="yaml-cm"># daily driver</span></div>
+        <div class="dep-row indent"><span class="dep-name">state_management:</span><span class="yaml-ver">^9.0.0</span><span class="yaml-cm"># Provider, clean architecture, MVVM</span></div>
+        <div class="dep-row indent"><span class="dep-name">supabase_firebase:</span><span class="yaml-ver">^8.5.0</span><span class="yaml-cm"># auth, realtime, storage</span></div>
+        <div class="dep-row indent"><span class="dep-name">rest_api:</span><span class="yaml-ver">^9.0.0</span><span class="yaml-cm"># integrations & payments</span></div>
+        <div class="dep-row indent"><span class="dep-name">custom_animations:</span><span class="yaml-ver">^9.0.0</span><span class="yaml-cm"># motion with intent</span></div>
+        <div class="dep-row indent"><span class="dep-name">responsive_ui:</span><span class="yaml-ver">^9.0.0</span><span class="yaml-cm"># one codebase, every screen</span></div>
+        <div class="dep-row indent"><span class="dep-name">git:</span><span class="yaml-ver">^9.0.0</span><span class="yaml-cm"># version control, PR reviews</span></div>
+        <div>&nbsp;</div>
+        <div><span class="yaml-key">dev_dependencies:</span></div>
+        <div class="dep-row indent"><span class="dep-name">debugging:</span><span class="yaml-ver">^9.0.0</span><span class="yaml-cm"># patient, methodical</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PROJECTS as simulator -->
+  <section id="projects">
+    <div class="section-tag">projects.build</div>
+    <h2 class="section-title">Running on device</h2>
+
+    <div class="project-block file-window reveal">
+      <div class="chrome">
+        <div class="dots"><span class="r"></span><span class="y"></span><span class="g"></span></div>
+        <span class="sim-label"><i class="ph ph-device-mobile"></i> simulator — HabitX</span>
+      </div>
+      <div class="project-body">
+        <h3>HabitX — AI Cognitive Performance System</h3>
+        <p>A high-performance, offline-first productivity engine powered by local AI intelligence, premium glassmorphic UX, and immersive sensory gamification feedback.</p>
+        <div class="phone-scroller">
+          <div class="phone-screen"><img src="https://afadvyuogztogdclfjlq.supabase.co/storage/v1/object/sign/project%20images/screen-01.jpeg?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV8zODcyNTRiZi0wNTk0LTQ1NDEtYTZmYy02MDRmYzRmZGNmNzEiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJwcm9qZWN0IGltYWdlcy9zY3JlZW4tMDEuanBlZyIsInNjb3BlIjoiZG93bmxvYWQiLCJpYXQiOjE3ODU2NDU5NTgsImV4cCI6MjEwMTAwNTk1OH0.I-cJrJlI0LkoPAGZF_dlKL0q0tMlO6Uuf5kMoBaJyyI"></div>
+          <div class="phone-screen"><img src="https://afadvyuogztogdclfjlq.supabase.co/storage/v1/object/sign/project%20images/screen-02.jpeg?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV8zODcyNTRiZi0wNTk0LTQ1NDEtYTZmYy02MDRmYzRmZGNmNzEiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJwcm9qZWN0IGltYWdlcy9zY3JlZW4tMDIuanBlZyIsInNjb3BlIjoiZG93bmxvYWQiLCJpYXQiOjE3ODU2NDYwMjksImV4cCI6MjEwMTAwNjAyOX0.rBYUE4-udJchuXqr3bHvqbNjU5-rrDioR-Ks-peCnVE"></div>
+          <div class="phone-screen"><img src="https://afadvyuogztogdclfjlq.supabase.co/storage/v1/object/sign/project%20images/screen-03.jpeg?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV8zODcyNTRiZi0wNTk0LTQ1NDEtYTZmYy02MDRmYzRmZGNmNzEiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJwcm9qZWN0IGltYWdlcy9zY3JlZW4tMDMuanBlZyIsInNjb3BlIjoiZG93bmxvYWQiLCJpYXQiOjE3ODU2NDYxMTAsImV4cCI6MjEwMTAwNjExMH0.YST1z0g0WANPwIR1yQ1jEy6KIAbTrU1Fe4OeFzO8Rn8"></div>
+          <div class="phone-screen"><img src="https://afadvyuogztogdclfjlq.supabase.co/storage/v1/object/sign/project%20images/screen-04.jpeg?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV8zODcyNTRiZi0wNTk0LTQ1NDEtYTZmYy02MDRmYzRmZGNmNzEiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJwcm9qZWN0IGltYWdlcy9zY3JlZW4tMDQuanBlZyIsInNjb3BlIjoiZG93bmxvYWQiLCJpYXQiOjE3ODU2NDYxNDMsImV4cCI6MjEwMTAwNjE0M30.mqZZh_0Gs53GOyEC7JaP2Tf0iU9U6f_sCahDJIutfJE"></div>
+          <div class="phone-screen"><img src="https://afadvyuogztogdclfjlq.supabase.co/storage/v1/object/sign/project%20images/screen-05.jpeg?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV8zODcyNTRiZi0wNTk0LTQ1NDEtYTZmYy02MDRmYzRmZGNmNzEiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJwcm9qZWN0IGltYWdlcy9zY3JlZW4tMDUuanBlZyIsInNjb3BlIjoiZG93bmxvYWQiLCJpYXQiOjE3ODY5NDkzOTAsImV4cCI6MjEwMjMwOTM5MH0.601q3H2z4Lo7tnqZetFH4QxEbTtB5FRuNLQ9LkZ0Wdw" loading="lazy" alt="HabitX screen 5"></div>
+          <div class="phone-screen"><img src="https://afadvyuogztogdclfjlq.supabase.co/storage/v1/object/sign/project%20images/screen-06.jpeg?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV8zODcyNTRiZi0wNTk0LTQ1NDEtYTZmYy02MDRmYzRmZGNmNzEiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJwcm9qZWN0IGltYWdlcy9zY3JlZW4tMDYuanBlZyIsInNjb3BlIjoiZG93bmxvYWQiLCJpYXQiOjE3ODU2NDYxODQsImV4cCI6MjEwMTAwNjE4NH0.K52XQogElIqcmY3MPnUVMLRy2PO4swSgHn0-qjEHTKc"></div>
+          <div class="phone-screen"><img src="https://afadvyuogztogdclfjlq.supabase.co/storage/v1/object/sign/project%20images/screen-07.jpeg?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV8zODcyNTRiZi0wNTk0LTQ1NDEtYTZmYy02MDRmYzRmZGNmNzEiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJwcm9qZWN0IGltYWdlcy9zY3JlZW4tMDcuanBlZyIsInNjb3BlIjoiZG93bmxvYWQiLCJpYXQiOjE3ODU2NDYyMDcsImV4cCI6MjEwMTAwNjIwN30.xuiNszK35NyXagDJ1r3dHZRvpdIobhtqE3GgoQk1s5s"></div>
         </div>
-      </section>
+        <a href="https://github.com/Shalcontech/HabitX" target="_blank" class="project-link">git clone &amp; view source →</a>
+      </div>
+    </div>
 
-      <section class="content-grid" id="projects"> 
-        
-        <!-- HABITX PROJECT ADDED HERE -->
-        <div class="spotlight-card delay-3" id="habitx">
-          <div class="card-content">
-            <div class="scroller-header">
-              <h2><i class="ph ph-stack"></i> Featured Projects</h2>
-              <h3>HabitX (AI Cognitive Performance System)</h3>
-              <p>A high-performance, offline-first productivity engine powered by local AI intelligence (SHELBY AI v4.0), premium glassmorphic UX, and immersive sensory gamification feedback.</p>
-            </div>
-            <div class="phone-scroller">
-              <div class="phone-screen"><img src="https://afadvyuogztogdclfjlq.supabase.co/storage/v1/object/sign/project%20images/screen-01.jpeg?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV8zODcyNTRiZi0wNTk0LTQ1NDEtYTZmYy02MDRmYzRmZGNmNzEiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJwcm9qZWN0IGltYWdlcy9zY3JlZW4tMDEuanBlZyIsInNjb3BlIjoiZG93bmxvYWQiLCJpYXQiOjE3ODU2NDU5NTgsImV4cCI6MjEwMTAwNTk1OH0.I-cJrJlI0LkoPAGZF_dlKL0q0tMlO6Uuf5kMoBaJyyI"></div>
-              <div class="phone-screen"><img src="https://afadvyuogztogdclfjlq.supabase.co/storage/v1/object/sign/project%20images/screen-02.jpeg?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV8zODcyNTRiZi0wNTk0LTQ1NDEtYTZmYy02MDRmYzRmZGNmNzEiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJwcm9qZWN0IGltYWdlcy9zY3JlZW4tMDIuanBlZyIsInNjb3BlIjoiZG93bmxvYWQiLCJpYXQiOjE3ODU2NDYwMjksImV4cCI6MjEwMTAwNjAyOX0.rBYUE4-udJchuXqr3bHvqbNjU5-rrDioR-Ks-peCnVE"></div>
-              <div class="phone-screen"><img src="https://afadvyuogztogdclfjlq.supabase.co/storage/v1/object/sign/project%20images/screen-03.jpeg?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV8zODcyNTRiZi0wNTk0LTQ1NDEtYTZmYy02MDRmYzRmZGNmNzEiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJwcm9qZWN0IGltYWdlcy9zY3JlZW4tMDMuanBlZyIsInNjb3BlIjoiZG93bmxvYWQiLCJpYXQiOjE3ODU2NDYxMTAsImV4cCI6MjEwMTAwNjExMH0.YST1z0g0WANPwIR1yQ1jEy6KIAbTrU1Fe4OeFzO8Rn8"></div>
-              <div class="phone-screen"><img src="https://afadvyuogztogdclfjlq.supabase.co/storage/v1/object/sign/project%20images/screen-04.jpeg?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV8zODcyNTRiZi0wNTk0LTQ1NDEtYTZmYy02MDRmYzRmZGNmNzEiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJwcm9qZWN0IGltYWdlcy9zY3JlZW4tMDQuanBlZyIsInNjb3BlIjoiZG93bmxvYWQiLCJpYXQiOjE3ODU2NDYxNDMsImV4cCI6MjEwMTAwNjE0M30.mqZZh_0Gs53GOyEC7JaP2Tf0iU9U6f_sCahDJIutfJE"></div>
-              <div class="phone-screen"><img src="https://afadvyuogztogdclfjlq.supabase.co/storage/v1/object/sign/project%20images/screen-05.jpeg?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV8zODcyNTRiZi0wNTk0LTQ1NDEtYTZmYy02MDRmYzRmZGNmNzEiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJwcm9qZWN0IGltYWdlcy9zY3JlZW4tMDUuanBlZyIsInNjb3BlIjoiZG93bmxvYWQiLCJpYXQiOjE3ODU2NDYxNjIsImV4cCI6MTc4NjUxMDE2Mn0.FIshwCcmsLLFp8lEnG1Bxla6Zc2Sf-nRfVh2zfvYk-4"></div>
-              <div class="phone-screen"><img src="https://afadvyuogztogdclfjlq.supabase.co/storage/v1/object/sign/project%20images/screen-06.jpeg?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV8zODcyNTRiZi0wNTk0LTQ1NDEtYTZmYy02MDRmYzRmZGNmNzEiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJwcm9qZWN0IGltYWdlcy9zY3JlZW4tMDYuanBlZyIsInNjb3BlIjoiZG93bmxvYWQiLCJpYXQiOjE3ODU2NDYxODQsImV4cCI6MjEwMTAwNjE4NH0.K52XQogElIqcmY3MPnUVMLRy2PO4swSgHn0-qjEHTKc"></div>
-              <div class="phone-screen"><img src="https://afadvyuogztogdclfjlq.supabase.co/storage/v1/object/sign/project%20images/screen-07.jpeg?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV8zODcyNTRiZi0wNTk0LTQ1NDEtYTZmYy02MDRmYzRmZGNmNzEiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJwcm9qZWN0IGltYWdlcy9zY3JlZW4tMDcuanBlZyIsInNjb3BlIjoiZG93bmxvYWQiLCJpYXQiOjE3ODU2NDYyMDcsImV4cCI6MjEwMTAwNjIwN30.xuiNszK35NyXagDJ1r3dHZRvpdIobhtqE3GgoQk1s5s"></div>
-            </div>
-            <a href="https://github.com/Shalcontech/HabitX" target="_blank" class="project-link">View Source Code &rarr;</a>
-          </div>
+    <div class="project-block file-window reveal">
+      <div class="chrome">
+        <div class="dots"><span class="r"></span><span class="y"></span><span class="g"></span></div>
+        <span class="sim-label"><i class="ph ph-device-mobile"></i> simulator — Gromart</span>
+      </div>
+      <div class="project-body">
+        <h3>Gromart Grocery App</h3>
+        <p>A Flutter grocery shopping app with Supabase OTP authentication, a Gemini-powered AI chatbot, Provider-based state management, and secure UPI + Stripe payments.</p>
+        <div class="phone-scroller">
+          <div class="phone-screen"><img src="https://afadvyuogztogdclfjlq.supabase.co/storage/v1/object/sign/project%20images/Screenshot_1762065759.png?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV8zODcyNTRiZi0wNTk0LTQ1NDEtYTZmYy02MDRmYzRmZGNmNzEiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJwcm9qZWN0IGltYWdlcy9TY3JlZW5zaG90XzE3NjIwNjU3NTkucG5nIiwiaWF0IjoxNzYyMDY4NzUzLCJleHAiOjIwNzc0Mjg3NTN9.LHhoiVgV5Dj5nAdIke_XPXIveGxDn9DLlNZIHqqqnCM"></div>
+          <div class="phone-screen"><img src="https://afadvyuogztogdclfjlq.supabase.co/storage/v1/object/sign/project%20images/Screenshot_1762065787.png?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV8zODcyNTRiZi0wNTk0LTQ1NDEtYTZmYy02MDRmYzRmZGNmNzEiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJwcm9qZWN0IGltYWdlcy9TY3JlZW5zaG90XzE3NjIwNjU3ODcucG5nIiwiaWF0IjoxNzYyMDY4Nzk4LCJleHAiOjIwNzc0Mjg3OTh9.KBB42Yin_5qhGha72Vzjjla_rQOY56F46czxy-GH4IM"></div>
+          <div class="phone-screen"><img src="https://afadvyuogztogdclfjlq.supabase.co/storage/v1/object/sign/project%20images/Screenshot_1762066042.png?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV8zODcyNTRiZi0wNTk0LTQ1NDEtYTZmYy02MDRmYzRmZGNmNzEiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJwcm9qZWN0IGltYWdlcy9TY3JlZW5zaG90XzE3NjIwNjYwNDIucG5nIiwiaWF0IjoxNzYyMDY4ODM1LCJleHAiOjIwNzc0Mjg4MzV9.lWAamieJDWNyyuky-MMyWkmjj61VeG0hpa0lFd_quXo"></div>
+          <div class="phone-screen"><img src="https://afadvyuogztogdclfjlq.supabase.co/storage/v1/object/sign/project%20images/Screenshot_1762066077.png?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV8zODcyNTRiZi0wNTk0LTQ1NDEtYTZmYy02MDRmYzRmZGNmNzEiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJwcm9qZWN0IGltYWdlcy9TY3JlZW5zaG90XzE3NjIwNjYwNzcucG5nIiwiaWF0IjoxNzYyMDY4ODcyLCJleHAiOjIwNzc0Mjg4NzJ9.w5VIbYnUzK6rq5PfhSu_FSI3czcJwTfJYyRoXflyAZ0"></div>
+          <div class="phone-screen"><img src="https://afadvyuogztogdclfjlq.supabase.co/storage/v1/object/sign/project%20images/Screenshot_1765262652.png?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV8zODcyNTRiZi0wNTk0LTQ1NDEtYTZmYy02MDRmYzRmZGNmNzEiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJwcm9qZWN0IGltYWdlcy9TY3JlZW5zaG90XzE3NjUyNjI2NTIucG5nIiwiaWF0IjoxNzY1MjYzMDA4LCJleHAiOjIwODA2MjMwMDh9.J2qZEdiJ5pKLZop6W_Gc0B54o315ovGgzlt3xu2C63Y"></div>
+          <div class="phone-screen"><img src="https://afadvyuogztogdclfjlq.supabase.co/storage/v1/object/sign/project%20images/Screenshot_1765262788.png?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV8zODcyNTRiZi0wNTk0LTQ1NDEtYTZmYy02MDRmYzRmZGNmNzEiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJwcm9qZWN0IGltYWdlcy9TY3JlZW5zaG90XzE3NjUyNjI3ODgucG5nIiwiaWF0IjoxNzY1MjYzMTAzLCJleHAiOjIwODA2MjMxMDN9.-DAwGwdp9UrDYFdCj8XqJRS2hhaSILEAdB2UxwRmusI"></div>
         </div>
-        
-        <div class="spotlight-card delay-3" id="gromart">
-          <div class="card-content">
-            <div class="scroller-header">
-              <h3>Gromart Grocery App</h3>
-              <p>A Flutter-based grocery shopping app featuring Supabase OTP authentication, AI-powered chatbot using Gemini, and Provider-based state management, with secure UPI and Stripe payment integration.</p>
-            </div>
-           <div class="phone-scroller">
-              <div class="phone-screen"><img src="https://afadvyuogztogdclfjlq.supabase.co/storage/v1/object/sign/project%20images/Screenshot_1762065759.png?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV8zODcyNTRiZi0wNTk0LTQ1NDEtYTZmYy02MDRmYzRmZGNmNzEiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJwcm9qZWN0IGltYWdlcy9TY3JlZW5zaG90XzE3NjIwNjU3NTkucG5nIiwiaWF0IjoxNzYyMDY4NzUzLCJleHAiOjIwNzc0Mjg3NTN9.LHhoiVgV5Dj5nAdIke_XPXIveGxDn9DLlNZIHqqqnCM"></div>
-              <div class="phone-screen"><img src="https://afadvyuogztogdclfjlq.supabase.co/storage/v1/object/sign/project%20images/Screenshot_1762065787.png?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV8zODcyNTRiZi0wNTk0LTQ1NDEtYTZmYy02MDRmYzRmZGNmNzEiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJwcm9qZWN0IGltYWdlcy9TY3JlZW5zaG90XzE3NjIwNjU3ODcucG5nIiwiaWF0IjoxNzYyMDY4Nzk4LCJleHAiOjIwNzc0Mjg3OTh9.KBB42Yin_5qhGha72Vzjjla_rQOY56F46czxy-GH4IM"></div>
-              <div class="phone-screen"><img src="https://afadvyuogztogdclfjlq.supabase.co/storage/v1/object/sign/project%20images/Screenshot_1762066042.png?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV8zODcyNTRiZi0wNTk0LTQ1NDEtYTZmYy02MDRmYzRmZGNmNzEiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJwcm9qZWN0IGltYWdlcy9TY3JlZW5zaG90XzE3NjIwNjYwNDIucG5nIiwiaWF0IjoxNzYyMDY4ODM1LCJleHAiOjIwNzc0Mjg4MzV9.lWAamieJDWNyyuky-MMyWkmjj61VeG0hpa0lFd_quXo"></div>
-              <div class="phone-screen"><img src="https://afadvyuogztogdclfjlq.supabase.co/storage/v1/object/sign/project%20images/Screenshot_1762066077.png?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV8zODcyNTRiZi0wNTk0LTQ1NDEtYTZmYy02MDRmYzRmZGNmNzEiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJwcm9qZWN0IGltYWdlcy9TY3JlZW5zaG90XzE3NjIwNjYwNzcucG5nIiwiaWF0IjoxNzYyMDY4ODcyLCJleHAiOjIwNzc0Mjg4NzJ9.w5VIbYnUzK6rq5PfhSu_FSI3czcJwTfJYyRoXflyAZ0"></div>
-              <div class="phone-screen"><img src="https://afadvyuogztogdclfjlq.supabase.co/storage/v1/object/sign/project%20images/Screenshot_1765262652.png?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV8zODcyNTRiZi0wNTk0LTQ1NDEtYTZmYy02MDRmYzRmZGNmNzEiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJwcm9qZWN0IGltYWdlcy9TY3JlZW5zaG90XzE3NjUyNjI2NTIucG5nIiwiaWF0IjoxNzY1MjYzMDA4LCJleHAiOjIwODA2MjMwMDh9.J2qZEdiJ5pKLZop6W_Gc0B54o315ovGgzlt3xu2C63Y"></div>
-              <div class="phone-screen"><img src="https://afadvyuogztogdclfjlq.supabase.co/storage/v1/object/sign/project%20images/Screenshot_1765262788.png?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV8zODcyNTRiZi0wNTk0LTQ1NDEtYTZmYy02MDRmYzRmZGNmNzEiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJwcm9qZWN0IGltYWdlcy9TY3JlZW5zaG90XzE3NjUyNjI3ODgucG5nIiwiaWF0IjoxNzY1MjYzMTAzLCJleHAiOjIwODA2MjMxMDN9.-DAwGwdp9UrDYFdCj8XqJRS2hhaSILEAdB2UxwRmusI"></div>
-              <div class="phone-screen"><img src="https://afadvyuogztogdclfjlq.supabase.co/storage/v1/object/sign/project%20images/Screenshot_1765262665.png?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV8zODcyNTRiZi0wNTk0LTQ1NDEtYTZmYy02MDRmYzRmZGNmNzEiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJwcm9qZWN0IGltYWdlcy9TY3JlZW5zaG90XzE3NjUyNjI2NjUucG5nIiwiaWF0IjoxNzY1MjYzMzYwLCJleHAiOjIwODA2MjMzNjB9.KWC0106ogGN97xvgOcr2qwcn_DMKVKt6MXXD35Rs6hA"></div>
-              <div class="phone-screen"><img src="https://afadvyuogztogdclfjlq.supabase.co/storage/v1/object/sign/project%20images/Screenshot_1765262811.png?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV8zODcyNTRiZi0wNTk0LTQ1NDEtYTZmYy02MDRmYzRmZGNmNzEiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJwcm9qZWN0IGltYWdlcy9TY3JlZW5zaG90XzE3NjUyNjI4MTEucG5nIiwiaWF0IjoxNzY1MjYzMzMxLCJleHAiOjIwODA2MjMzMzF9.Zf2T3YlzzyvGfWLiqR7LA2-SPwlG0kNIVL7iknVtdo4"></div>
-              <div class="phone-screen"><img src="https://afadvyuogztogdclfjlq.supabase.co/storage/v1/object/sign/project%20images/Screenshot_1762066188.png?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV8zODcyNTRiZi0wNTk0LTQ1NDEtYTZmYy02MDRmYzRmZGNmNzEiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJwcm9qZWN0IGltYWdlcy9TY3JlZW5zaG90XzE3NjIwNjYxODgucG5nIiwiaWF0IjoxNzYyMDY4OTcwLCJleHAiOjIwNzc0Mjg5NzB9.LjfST-BA5Jlkg0m9OuNfB3PC4iK6atP8YeOF8xvL234"></div>
-            </div>
-            <a href="https://github.com/sisodiyaashraf/gromart_app" target="_blank" class="project-link">View Source Code &rarr;</a>
-          </div>
+        <a href="https://github.com/sisodiyaashraf/gromart_app" target="_blank" class="project-link">git clone &amp; view source →</a>
+      </div>
+    </div>
+
+    <div class="project-block file-window reveal">
+      <div class="chrome">
+        <div class="dots"><span class="r"></span><span class="y"></span><span class="g"></span></div>
+        <span class="sim-label"><i class="ph ph-device-mobile"></i> simulator — Sport &amp; Exercise</span>
+      </div>
+      <div class="project-body">
+        <h3>Sport &amp; Exercise App</h3>
+        <p>Workout tracker with Supabase storage for data and analytics — real-time skill tracking, timed drills, and Provider-based state management.</p>
+        <div class="phone-scroller">
+          <div class="phone-screen"><img src="https://afadvyuogztogdclfjlq.supabase.co/storage/v1/object/sign/project%20images/Screenshot_1762065233.png?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV8zODcyNTRiZi0wNTk0LTQ1NDEtYTZmYy02MDRmYzRmZGNmNzEiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJwcm9qZWN0IGltYWdlcy9TY3JlZW5zaG90XzE3NjIwNjUyMzMucG5nIiwiaWF0IjoxNzYyMDY2OTIyLCJleHAiOjE5MTk3NDY5MjJ9.LrA_2HrHPXPUX94NJ7owRCFzXr3WcnEG0CNOl91Q0go"></div>
+          <div class="phone-screen"><img src="https://afadvyuogztogdclfjlq.supabase.co/storage/v1/object/sign/project%20images/Screenshot_1762065439.png?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV8zODcyNTRiZi0wNTk0LTQ1NDEtYTZmYy02MDRmYzRmZGNmNzEiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJwcm9qZWN0IGltYWdlcy9TY3JlZW5zaG90XzE3NjIwNjU0MzkucG5nIiwiaWF0IjoxNzYyMDY3MDAxLCJleHAiOjE4MjUxMzkwMDF9.XkXaUzEUnzcxmj94oQtv99s-bd_gYWJYQBIhQSH65bw"></div>
+          <div class="phone-screen"><img src="https://afadvyuogztogdclfjlq.supabase.co/storage/v1/object/sign/project%20images/Screenshot_1762065421.png?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV8zODcyNTRiZi0wNTk0LTQ1NDEtYTZmYy02MDRmYzRmZGNmNzEiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJwcm9qZWN0IGltYWdlcy9TY3JlZW5zaG90XzE3NjIwNjU0MjEucG5nIiwiaWF0IjoxNzYyMDY3MDgzLCJleHAiOjE5MTk3NDcwODN9.m9bBOsrFc9hPG0xcOoJcQNi_x8rxn4px2Ty3LMCxDcU"></div>
+          <div class="phone-screen"><img src="https://afadvyuogztogdclfjlq.supabase.co/storage/v1/object/sign/project%20images/Screenshot_1762065458.png?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV8zODcyNTRiZi0wNTk0LTQ1NDEtYTZmYy02MDRmYzRmZGNmNzEiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJwcm9qZWN0IGltYWdlcy9TY3JlZW5zaG90XzE3NjIwNjU0NTgucG5nIiwiaWF0IjoxNzYyMDY3MTMwLCJleHAiOjE5MTk3NDcxMzB9.oKxr_Kv6Efnx2dv2iT1XJPBpwh9_FslFNhU4hZHR4SA"></div>
+          <div class="phone-screen"><img src="https://afadvyuogztogdclfjlq.supabase.co/storage/v1/object/sign/project%20images/Screenshot_1762065659.png?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV8zODcyNTRiZi0wNTk0LTQ1NDEtYTZmYy02MDRmYzRmZGNmNzEiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJwcm9qZWN0IGltYWdlcy9TY3JlZW5zaG90XzE3NjIwNjU2NTkucG5nIiwiaWF0IjoxNzYyMDY3MTYyLCJleHAiOjE5MTk3NDcxNjJ9.uWxg-csNUPy8-t4ge1um889ifhblpTASryNc047Xgm0"></div>
+          <div class="phone-screen"><img src="https://afadvyuogztogdclfjlq.supabase.co/storage/v1/object/sign/project%20images/Screenshot_1762065687.png?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV8zODcyNTRiZi0wNTk0LTQ1NDEtYTZmYy02MDRmYzRmZGNmNzEiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJwcm9qZWN0IGltYWdlcy9TY3JlZW5zaG90XzE3NjIwNjU2ODcucG5nIiwic2NvcGUiOiJkb3dubG9hZCIsImlhdCI6MTc4Njk0OTc0MSwiZXhwIjoyMTAyMzA5NzQxfQ.NjoYI-lb0xo33yYGeUQFOozJWH6niBwI-3A5RxnMpuA" loading="lazy" alt="Sport & Exercise screen 6"
+                 onerror="this.onerror=null; this.style.objectFit='contain'; this.style.background='#0B0E14'; this.alt='Sport & Exercise screen 6 unavailable';"></div>
         </div>
+        <a href="https://github.com/sisodiyaashraf/Sport_App" target="_blank" class="project-link">git clone &amp; view source →</a>
+      </div>
+    </div>
 
-        <div class="spotlight-card delay-3">
-          <div class="card-content">
-            <div class="scroller-header">
-              <h3>Sport & Exercise App</h3>
-              <p>Workout tracker with Supabase storage for data and analytics. Features real-time skill tracking, timed drills, and provider-based state management.</p>
-            </div>
-            <div class="phone-scroller">
-              <div class="phone-screen"><img src="https://afadvyuogztogdclfjlq.supabase.co/storage/v1/object/sign/project%20images/Screenshot_1762065233.png?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV8zODcyNTRiZi0wNTk0LTQ1NDEtYTZmYy02MDRmYzRmZGNmNzEiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJwcm9qZWN0IGltYWdlcy9TY3JlZW5zaG90XzE3NjIwNjUyMzMucG5nIiwiaWF0IjoxNzYyMDY2OTIyLCJleHAiOjE5MTk3NDY5MjJ9.LrA_2HrHPXPUX94NJ7owRCFzXr3WcnEG0CNOl91Q0go"></div>
-              <div class="phone-screen"><img src="https://afadvyuogztogdclfjlq.supabase.co/storage/v1/object/sign/project%20images/Screenshot_1762065439.png?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV8zODcyNTRiZi0wNTk0LTQ1NDEtYTZmYy02MDRmYzRmZGNmNzEiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJwcm9qZWN0IGltYWdlcy9TY3JlZW5zaG90XzE3NjIwNjU0MzkucG5nIiwiaWF0IjoxNzYyMDY3MDAxLCJleHAiOjE4MjUxMzkwMDF9.XkXaUzEUnzcxmj94oQtv99s-bd_gYWJYQBIhQSH65bw"></div>
-              <div class="phone-screen"><img src="https://afadvyuogztogdclfjlq.supabase.co/storage/v1/object/sign/project%20images/Screenshot_1762065421.png?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV8zODcyNTRiZi0wNTk0LTQ1NDEtYTZmYy02MDRmYzRmZGNmNzEiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJwcm9qZWN0IGltYWdlcy9TY3JlZW5zaG90XzE3NjIwNjU0MjEucG5nIiwiaWF0IjoxNzYyMDY3MDgzLCJleHAiOjE5MTk3NDcwODN9.m9bBOsrFc9hPG0xcOoJcQNi_x8rxn4px2Ty3LMCxDcU"></div>
-              <div class="phone-screen"><img src="https://afadvyuogztogdclfjlq.supabase.co/storage/v1/object/sign/project%20images/Screenshot_1762065458.png?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV8zODcyNTRiZi0wNTk0LTQ1NDEtYTZmYy02MDRmYzRmZGNmNzEiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJwcm9qZWN0IGltYWdlcy9TY3JlZW5zaG90XzE3NjIwNjU0NTgucG5nIiwiaWF0IjoxNzYyMDY3MTMwLCJleHAiOjE5MTk3NDcxMzB9.oKxr_Kv6Efnx2dv2iT1XJPBpwh9_FslFNhU4hZHR4SA"></div>
-              <div class="phone-screen"><img src="https://afadvyuogztogdclfjlq.supabase.co/storage/v1/object/sign/project%20images/Screenshot_1762065659.png?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV8zODcyNTRiZi0wNTk0LTQ1NDEtYTZmYy02MDRmYzRmZGNmNzEiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJwcm9qZWN0IGltYWdlcy9TY3JlZW5zaG90XzE3NjIwNjU2NTkucG5nIiwiaWF0IjoxNzYyMDY3MTYyLCJleHAiOjE5MTk3NDcxNjJ9.uWxg-csNUPy8-t4ge1um889ifhblpTASryNc047Xgm0"></div>
-              <div class="phone-screen"><img src="https://afadvyuogztogdclfjlq.supabase.co/storage/v1/object/sign/project%20images/Screenshot_1762065687.png?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV8zODcyNTRiZi0wNTk0LTQ1NDEtYTZmYy02MDRmYzRmZGNmNzEiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJwcm9qZWN0IGltYWdlcy9TY3JlZW5zaG90XzE3NjIwNjU2ODcucG5nIiwiaWF0IjoxNzYyMDY3MTY1LCJleHAiOjE5MTk3NDcxOTV9.kKZq2ZCABE_0M4TiA1sAPdUpQIU9oYEYNZBj4VmA1ck"></div>
-            </div>
-            <a href="https://github.com/sisodiyaashraf/Sport_App" target="_blank" class="project-link">View Source Code &rarr;</a>
-          </div>
+    <div class="project-block file-window reveal">
+      <div class="chrome">
+        <div class="dots"><span class="r"></span><span class="y"></span><span class="g"></span></div>
+        <span class="sim-label"><i class="ph ph-device-mobile"></i> simulator — Chat App</span>
+      </div>
+      <div class="project-body">
+        <h3>Chat App</h3>
+        <p>Real-time chat using Supabase Realtime and Flutter WebSockets — live messaging, instant updates, and a seamless user experience.</p>
+        <div class="phone-scroller">
+          <div class="phone-screen"><img src="https://afadvyuogztogdclfjlq.supabase.co/storage/v1/object/sign/project%20images/Screenshot%202025-11-02%20173248.png?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV8zODcyNTRiZi0wNTk0LTQ1NDEtYTZmYy02MDRmYzRmZGNmNzEiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJwcm9qZWN0IGltYWdlcy9TY3JlZW5zaG90IDIwMjUtMTEtMDIgMTczMjQ4LnBuZyIsImlhdCI6MTc2MjA4NzAxNCwiZXhwIjoyMDc3NDQ3MDE0fQ.yCgHpzgkgLmvcGxlSfk0gN7O91SISAB3hA7xucE5gXg"></div>
+          <div class="phone-screen"><img src="https://afadvyuogztogdclfjlq.supabase.co/storage/v1/object/sign/project%20images/Screenshot%202025-11-02%20174026.png?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV8zODcyNTRiZi0wNTk0LTQ1NDEtYTZmYy02MDRmYzRmZGNmNzEiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJwcm9qZWN0IGltYWdlcy9TY3JlZW5zaG90IDIwMjUtMTEtMDIgMTc0MDI2LnBuZyIsImlhdCI6MTc2MjA4NzgxNiwiZXhwIjoyMDc3NDQ3ODE2fQ.lKgkwZTpMQgprUQkpetcGEhCp-uUYKBdMeSYuUJ0iH8"></div>
+          <div class="phone-screen"><img src="https://afadvyuogztogdclfjlq.supabase.co/storage/v1/object/sign/project%20images/Screenshot_1739188543.png?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV8zODcyNTRiZi0wNTk0LTQ1NDEtYTZmYy02MDRmYzRmZGNmNzEiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJwcm9qZWN0IGltYWdlcy9TY3JlZW5zaG90XzE3MzkxODg1NDMucG5nIiwiaWF0IjoxNzYyMDg3ODY4LCJleHAiOjIwNzc0NDc4Njh9.2EEUaYcEB316Y9OgrhuRHcUIWERM7s7L_5h6_ODGOpE"></div>
+          <div class="phone-screen"><img src="https://afadvyuogztogdclfjlq.supabase.co/storage/v1/object/sign/project%20images/Screenshot%202025-11-02%20174139.png?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV8zODcyNTRiZi0wNTk0LTQ1NDEtYTZmYy02MDRmYzRmZGNmNzEiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJwcm9qZWN0IGltYWdlcy9TY3JlZW5zaG90IDIwMjUtMTEtMDIgMTc0MTM5LnBuZyIsImlhdCI6MTc2MjA4NzkwNywiZXhwIjoyMDc3NDQ3OTA3fQ.aLbYXQE5142DYKf7a--DdkSC1t4FPogwLGyIXR2Y3bw"></div>
+          <div class="phone-screen"><img src="https://afadvyuogztogdclfjlq.supabase.co/storage/v1/object/sign/project%20images/Screenshot%202025-11-02%20174440.png?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV8zODcyNTRiZi0wNTk0LTQ1NDEtYTZmYy02MDRmYzRmZGNmNzEiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJwcm9qZWN0IGltYWdlcy9TY3JlZW5zaG90IDIwMjUtMTEtMDIgMTc0NDQwLnBuZyIsImlhdCI6MTc2MjA4Nzk2NCwiZXhwIjoyMDc3NDQ3OTY0fQ.lo9vsoerPNUx9hjbAcQaetYC2LmMZA_vDUUbSZGSb5Q"></div>
+          <div class="phone-screen"><img src="https://afadvyuogztogdclfjlq.supabase.co/storage/v1/object/sign/project%20images/Screenshot%202025-11-02%20174312.png?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV8zODcyNTRiZi0wNTk0LTQ1NDEtYTZmYy02MDRmYzRmZGNmNzEiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJwcm9qZWN0IGltYWdlcy9TY3JlZW5zaG90IDIwMjUtMTEtMDIgMTc0MzEyLnBuZyIsImlhdCI6MTc2MjA4NzkzNCwiZXhwIjoyMDc3NDQ3OTM0fQ.PMLAr5nrGbD27AKuVOapB_KfhfcQFAjZQKdHyx6VNlo"></div>
         </div>
+        <a href="https://github.com/sisodiyaashraf/ChatAPP" target="_blank" class="project-link">git clone &amp; view source →</a>
+      </div>
+    </div>
 
-        <div class="spotlight-card delay-3">
-          <div class="card-content">
-            <div class="scroller-header">
-              <h3>Chat App</h3>
-              <p>Real-time chat using Supabase Realtime and Flutter WebSockets. Implemented live messaging, instant updates, and seamless user experience.</p>
-            </div>
-           <div class="phone-scroller">
-              <div class="phone-screen"><img src="https://afadvyuogztogdclfjlq.supabase.co/storage/v1/object/sign/project%20images/Screenshot%202025-11-02%20173248.png?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV8zODcyNTRiZi0wNTk0LTQ1NDEtYTZmYy02MDRmYzRmZGNmNzEiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJwcm9qZWN0IGltYWdlcy9TY3JlZW5zaG90IDIwMjUtMTEtMDIgMTczMjQ4LnBuZyIsImlhdCI6MTc2MjA4NzAxNCwiZXhwIjoyMDc3NDQ3MDE0fQ.yCgHpzgkgLmvcGxlSfk0gN7O91SISAB3hA7xucE5gXg"></div>
-              <div class="phone-screen"><img src="https://afadvyuogztogdclfjlq.supabase.co/storage/v1/object/sign/project%20images/Screenshot%202025-11-02%20174026.png?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV8zODcyNTRiZi0wNTk0LTQ1NDEtYTZmYy02MDRmYzRmZGNmNzEiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJwcm9qZWN0IGltYWdlcy9TY3JlZW5zaG90IDIwMjUtMTEtMDIgMTc0MDI2LnBuZyIsImlhdCI6MTc2MjA4NzgxNiwiZXhwIjoyMDc3NDQ3ODE2fQ.lKgkwZTpMQgprUQkpetcGEhCp-uUYKBdMeSYuUJ0iH8"></div>
-              <div class="phone-screen"><img src="https://afadvyuogztogdclfjlq.supabase.co/storage/v1/object/sign/project%20images/Screenshot_1739188543.png?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV8zODcyNTRiZi0wNTk0LTQ1NDEtYTZmYy02MDRmYzRmZGNmNzEiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJwcm9qZWN0IGltYWdlcy9TY3JlZW5zaG90XzE3MzkxODg1NDMucG5nIiwiaWF0IjoxNzYyMDg3ODY4LCJleHAiOjIwNzc0NDc4Njh9.2EEUaYcEB316Y9OgrhuRHcUIWERM7s7L_5h6_ODGOpE"></div>
-              <div class="phone-screen"><img src="https://afadvyuogztogdclfjlq.supabase.co/storage/v1/object/sign/project%20images/Screenshot%202025-11-02%20174139.png?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV8zODcyNTRiZi0wNTk0LTQ1NDEtYTZmYy02MDRmYzRmZGNmNzEiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJwcm9qZWN0IGltYWdlcy9TY3JlZW5zaG90IDIwMjUtMTEtMDIgMTc0MTM5LnBuZyIsImlhdCI6MTc2MjA4NzkwNywiZXhwIjoyMDc3NDQ3OTA3fQ.aLbYXQE5142DYKf7a--DdkSC1t4FPogwLGyIXR2Y3bw"></div>
-              <div class="phone-screen"><img src="https://afadvyuogztogdclfjlq.supabase.co/storage/v1/object/sign/project%20images/Screenshot%202025-11-02%20174440.png?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV8zODcyNTRiZi0wNTk0LTQ1NDEtYTZmYy02MDRmYzRmZGNmNzEiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJwcm9qZWN0IGltYWdlcy9TY3JlZW5zaG90IDIwMjUtMTEtMDIgMTc0NDQwLnBuZyIsImlhdCI6MTc2MjA4Nzk2NCwiZXhwIjoyMDc3NDQ3OTY0fQ.lo9vsoerPNUx9hjbAcQaetYC2LmMZA_vDUUbSZGSb5Q"></div>
-              <div class="phone-screen"><img src="https://afadvyuogztogdclfjlq.supabase.co/storage/v1/object/sign/project%20images/Screenshot%202025-11-02%20174312.png?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV8zODcyNTRiZi0wNTk0LTQ1NDEtYTZmYy02MDRmYzRmZGNmNzEiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJwcm9qZWN0IGltYWdlcy9TY3JlZW5zaG90IDIwMjUtMTEtMDIgMTc0MzEyLnBuZyIsImlhdCI6MTc2MjA4NzkzNCwiZXhwIjoyMDc3NDQ3OTM0fQ.PMLAr5nrGbD27AKuVOapB_KfhfcQFAjZQKdHyx6VNlo"></div>
-            </div>
-            <a href="https://github.com/sisodiyaashraf/ChatAPP" target="_blank" class="project-link">View Source Code &rarr;</a>
-          </div>
+    <div class="project-block file-window reveal">
+      <div class="chrome">
+        <div class="dots"><span class="r"></span><span class="y"></span><span class="g"></span></div>
+        <span class="sim-label"><i class="ph ph-device-mobile"></i> simulator — Movie App</span>
+      </div>
+      <div class="project-body">
+        <h3>Movie App</h3>
+        <p>A modern movie browsing UI built with smooth animations, adaptive layouts across screen sizes, and a strong focus on clean visuals and performance.</p>
+        <div class="phone-scroller">
+          <div class="phone-screen"><img src="https://afadvyuogztogdclfjlq.supabase.co/storage/v1/object/sign/project%20images/Screenshot_1762083237.png?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV8zODcyNTRiZi0wNTk0LTQ1NDEtYTZmYy02MDRmYzRmZGNmNzEiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJwcm9qZWN0IGltYWdlcy9TY3JlZW5zaG90XzE3NjIwODMyMzcucG5nIiwiaWF0IjoxNzYyMDg3MTk1LCJleHAiOjIwNzc0NDcxOTV9.tMSWJ4ezfpeE_fqb2km1p15HXVUYm-drOpP60FY_Zb0"></div>
+          <div class="phone-screen"><img src="https://afadvyuogztogdclfjlq.supabase.co/storage/v1/object/sign/project%20images/Screenshot_1762083305.png?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV8zODcyNTRiZi0wNTk0LTQ1NDEtYTZmYy02MDRmYzRmZGNmNzEiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJwcm9qZWN0IGltYWdlcy9TY3JlZW5zaG90XzE3NjIwODMzMDUucG5nIiwiaWF0IjoxNzYyMDg3NTAyLCJleHAiOjIwNzc0NDc1MDJ9.7ZqxkxBMqgmcsCbwUMVnr7VVYJRSnDN32jke7XyY5VU"></div>
+          <div class="phone-screen"><img src="https://afadvyuogztogdclfjlq.supabase.co/storage/v1/object/sign/project%20images/Screenshot_1762083243.png?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV8zODcyNTRiZi0wNTk0LTQ1NDEtYTZmYy02MDRmYzRmZGNmNzEiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJwcm9qZWN0IGltYWdlcy9TY3JlZW5zaG90XzE3NjIwODMyNDMucG5nIiwiaWF0IjoxNzYyMDg4MDcwLCJleHAiOjIwNzc0NDgwNzB9.YS6AU_0hQ6dLiDko5RWV1oaEsgZ2m0RZ5_2STlqHtvA"></div>
+          <div class="phone-screen"><img src="https://afadvyuogztogdclfjlq.supabase.co/storage/v1/object/sign/project%20images/Screenshot_1762083281.png?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV8zODcyNTRiZi0wNTk0LTQ1NDEtYTZmYy02MDRmYzRmZGNmNzEiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJwcm9qZWN0IGltYWdlcy9TY3JlZW5zaG90XzE3NjIwODMyODEucG5nIiwiaWF0IjoxNzYyMDg4MDM4LCJleHAiOjIwNzc0NDgwMzh9.MLyZYNZ3XomBNP9SynBp2GXmulwHfvhkoGuLtgOoSA0"></div>
+          <div class="phone-screen"><img src="https://afadvyuogztogdclfjlq.supabase.co/storage/v1/object/sign/project%20images/Screenshot_1762083275.png?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV8zODcyNTRiZi0wNTk0LTQ1NDEtYTZmYy02MDRmYzRmZGNmNzEiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJwcm9qZWN0IGltYWdlcy9TY3JlZW5zaG90XzE3NjIwODMyNzUucG5nIiwiaWF0IjoxNzYyMDg4MTE0LCJleHAiOjIwNzc0NDgxMTR9.k9w4-ML6opU20wACtFB_0VZ7NKZ1mQSi7fOuDRHBZf4"></div>
+          <div class="phone-screen"><img src="https://afadvyuogztogdclfjlq.supabase.co/storage/v1/object/sign/project%20images/Screenshot_1762083284.png?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV8zODcyNTRiZi0wNTk0LTQ1NDEtYTZmYy02MDRmYzRmZGNmNzEiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJwcm9qZWN0IGltYWdlcy9TY3JlZW5zaG90XzE3NjIwODMyODQucG5nIiwiaWF0IjoxNzYyMDg4MDExLCJleHAiOjIwNzc0NDgwMTF9.NR-Zu97S8cpi_h1DrpAPj3L_aV6ZV62PeCzGqoMfB1E"></div>
         </div>
+        <a href="https://github.com/sisodiyaashraf/Movie-app" target="_blank" class="project-link">git clone &amp; view source →</a>
+      </div>
+    </div>
+  </section>
 
-        <div class="spotlight-card delay-3">
-          <div class="card-content">
-            <div class="scroller-header">
-              <h3>Movie App</h3>
-              <p>Designed a modern movie application UI using Flutter with smooth animations and responsive layouts. Implemented adaptive designs for multiple screen sizes and devices. Focused on clean visuals, performance, and an engaging user experience.</p>
-            </div>
-            <div class="phone-scroller">
-              <div class="phone-screen"><img src="https://afadvyuogztogdclfjlq.supabase.co/storage/v1/object/sign/project%20images/Screenshot_1762083237.png?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV8zODcyNTRiZi0wNTk0LTQ1NDEtYTZmYy02MDRmYzRmZGNmNzEiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJwcm9qZWN0IGltYWdlcy9TY3JlZW5zaG90XzE3NjIwODMyMzcucG5nIiwiaWF0IjoxNzYyMDg3MTk1LCJleHAiOjIwNzc0NDcxOTV9.tMSWJ4ezfpeE_fqb2km1p15HXVUYm-drOpP60FY_Zb0"></div>
-              <div class="phone-screen"><img src="https://afadvyuogztogdclfjlq.supabase.co/storage/v1/object/sign/project%20images/Screenshot_1762083305.png?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV8zODcyNTRiZi0wNTk0LTQ1NDEtYTZmYy02MDRmYzRmZGNmNzEiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJwcm9qZWN0IGltYWdlcy9TY3JlZW5zaG90XzE3NjIwODMzMDUucG5nIiwiaWF0IjoxNzYyMDg3NTAyLCJleHAiOjIwNzc0NDc1MDJ9.7ZqxkxBMqgmcsCbwUMVnr7VVYJRSnDN32jke7XyY5VU"></div>
-              <div class="phone-screen"><img src="https://afadvyuogztogdclfjlq.supabase.co/storage/v1/object/sign/project%20images/Screenshot_1762083243.png?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV8zODcyNTRiZi0wNTk0LTQ1NDEtYTZmYy02MDRmYzRmZGNmNzEiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJwcm9qZWN0IGltYWdlcy9TY3JlZW5zaG90XzE3NjIwODMyNDMucG5nIiwiaWF0IjoxNzYyMDg4MDcwLCJleHAiOjIwNzc0NDgwNzB9.YS6AU_0hQ6dLiDko5RWV1oaEsgZ2m0RZ5_2STlqHtvA"></div>
-              <div class="phone-screen"><img src="https://afadvyuogztogdclfjlq.supabase.co/storage/v1/object/sign/project%20images/Screenshot_1762083281.png?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV8zODcyNTRiZi0wNTk0LTQ1NDEtYTZmYy02MDRmYzRmZGNmNzEiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJwcm9qZWN0IGltYWdlcy9TY3JlZW5zaG90XzE3NjIwODMyODEucG5nIiwiaWF0IjoxNzYyMDg4MDM4LCJleHAiOjIwNzc0NDgwMzh9.MLyZYNZ3XomBNP9SynBp2GXmulwHfvhkoGuLtgOoSA0"></div>
-              <div class="phone-screen"><img src="https://afadvyuogztogdclfjlq.supabase.co/storage/v1/object/sign/project%20images/Screenshot_1762083275.png?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV8zODcyNTRiZi0wNTk0LTQ1NDEtYTZmYy02MDRmYzRmZGNmNzEiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJwcm9qZWN0IGltYWdlcy9TY3JlZW5zaG90XzE3NjIwODMyNzUucG5nIiwiaWF0IjoxNzYyMDg4MTE0LCJleHAiOjIwNzc0NDgxMTR9.k9w4-ML6opU20wACtFB_0VZ7NKZ1mQSi7fOuDRHBZf4"></div>
-              <div class="phone-screen"><img src="https://afadvyuogztogdclfjlq.supabase.co/storage/v1/object/sign/project%20images/Screenshot_1762083284.png?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV8zODcyNTRiZi0wNTk0LTQ1NDEtYTZmYy02MDRmYzRmZGNmNzEiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJwcm9qZWN0IGltYWdlcy9TY3JlZW5zaG90XzE3NjIwODMyODQucG5nIiwiaWF0IjoxNzYyMDg4MDExLCJleHAiOjIwNzc0NDgwMTF9.NR-Zu97S8cpi_h1DrpAPj3L_aV6ZV62PeCzGqoMfB1E"></div>
-            </div>
-            <a href="https://github.com/sisodiyaashraf/Movie-app" target="_blank" class="project-link">View Source Code &rarr;</a>
-          </div>
-        </div>
+  <!-- SERVICES as terminal -->
+  <section id="services">
+    <div class="section-tag">services.offered</div>
+    <h2 class="section-title">flutter doctor -v</h2>
+    <div class="file-window reveal">
+      <div class="chrome">
+        <div class="dots"><span class="r"></span><span class="y"></span><span class="g"></span></div>
+        <span class="filename">zsh — 80x24</span>
+      </div>
+      <div class="term-body">
+        <div class="term-line"><span class="term-prompt">$</span><span class="term-cmd">flutter doctor -v</span></div>
+        <div class="term-line"><span class="check">[✓]</span><span class="term-label">Cross-platform builds</span><span class="term-desc">— iOS &amp; Android from one codebase</span></div>
+        <div class="term-line"><span class="check">[✓]</span><span class="term-label">Backend integration</span><span class="term-desc">— Supabase, Firebase, REST APIs</span></div>
+        <div class="term-line"><span class="check">[✓]</span><span class="term-label">UI/UX &amp; motion design</span><span class="term-desc">— complex, purposeful animations</span></div>
+        <div class="term-line"><span class="check">[✓]</span><span class="term-label">Performance profiling</span><span class="term-desc">— finding and fixing jank</span></div>
+        <div class="term-line" style="margin-top:8px;"><span class="term-prompt">$</span><span class="term-cmd">echo $STATUS</span></div>
+        <div class="term-line"><span class="term-desc">No issues found! Open for freelance &amp; full-time roles.</span><span class="caret"></span></div>
+      </div>
+    </div>
+  </section>
 
-      </section>
+  <!-- CONTACT as console -->
+  <section id="contact">
+    <div class="section-tag">contact.dart</div>
+    <h2 class="section-title">Send a message</h2>
+    <div class="file-window reveal">
+      <div class="chrome">
+        <div class="dots"><span class="r"></span><span class="y"></span><span class="g"></span></div>
+        <span class="filename">debug console</span>
+      </div>
+      <div class="console-body">
+        <div class="console-line"><span class="kw">final</span> hire = <span class="fn">HireRequest</span>();</div>
+        <form id="hireForm">
+          <div class="input-row"><span class="prompt">&gt;</span><input id="name" name="name" type="text" placeholder="hire.name" required autocomplete="name"></div>
+          <div class="input-row"><span class="prompt">&gt;</span><input id="email" name="email" type="email" placeholder="hire.email" required autocomplete="email"></div>
+          <div class="input-row" style="align-items:flex-start;"><span class="prompt" style="padding-top:8px;">&gt;</span><textarea id="message" name="message" placeholder="hire.message = '...'" required></textarea></div>
+          <button type="submit" class="run-btn"><i class="ph ph-play"></i> flutter run</button>
+          <div id="status"></div>
+        </form>
+      </div>
+    </div>
+  </section>
 
-      <section class="spotlight-card delay-3" id="services">
-        <div class="card-content">
-          <h2><i class="ph ph-briefcase"></i> Services</h2>
-          <div class="services-grid">
-            <div class="service-item"><i class="ph ph-device-mobile"></i><strong>Cross-Platform</strong><p>iOS & Android.</p></div>
-            <div class="service-item"><i class="ph ph-database"></i><strong>Backend</strong><p>Supabase / Firebase.</p></div>
-            <div class="service-item"><i class="ph ph-magic-wand"></i><strong>UI/UX</strong><p>Complex animations.</p></div>
-            <div class="service-item"><i class="ph ph-bug"></i><strong>Optimization</strong><p>Boosting Performance.</p></div>
-          </div>
-        </div>
-      </section>
+  <footer>© <span id="year"></span> Ashraf — built with Flutter-flavored HTML/CSS/JS</footer>
 
-      <section class="spotlight-card delay-3" id="contact">
-        <div class="card-content">
-          <h2><i class="ph ph-paper-plane-tilt"></i> Hire Me</h2>
-          <form id="hireForm">
-            <div class="input-group">
-              <input id="name" name="name" type="text" placeholder="Name" required autocomplete="name">
-            </div>
-            <div class="input-group">
-              <input id="email" name="email" type="email" placeholder="Email" required autocomplete="email">
-            </div>
-            <div class="input-group"><textarea id="message" rows="3" placeholder="How can I help you?" required></textarea></div>
-            <button type="submit" class="submit-btn">Send Proposal</button>
-            <div id="status" style="font-size:13px; margin-top:10px; text-align:center;"></div>
-          </form>
-        </div>
-      </section>
-
-    </main>
-  </div>
-
-  <div class="dock-wrapper">
-    <div class="dock">
-      <a href="#" class="dock-icon active"><i class="ph ph-house"></i></a>
-      <a href="#projects" class="dock-icon"><i class="ph ph-stack"></i></a>
-      <a href="#services" class="dock-icon"><i class="ph ph-lightning"></i></a>
-      <a href="#contact" class="dock-icon"><i class="ph ph-paper-plane-tilt"></i></a>
+  <!-- STATUS BAR -->
+  <div class="statusbar">
+    <div class="left">
+      <span class="badge"><span class="pulse-dot"></span> Open for work</span>
+      <span class="hide-sm">Ln 1, Col 1 · Dart</span>
+    </div>
+    <div class="right">
+      <a href="https://github.com/sisodiyaashraf" target="_blank" title="GitHub"><i class="ph ph-github-logo"></i></a>
+      <a href="mailto:ashrafsisodiya478@gmail.com" title="Mail"><i class="ph ph-envelope-simple"></i></a>
+      <a href="https://wa.me/919530273440" target="_blank" title="WhatsApp"><i class="ph ph-whatsapp-logo"></i></a>
+      <a href="https://afadvyuogztogdclfjlq.supabase.co/storage/v1/object/public/resume/Resume.pdf" target="_blank" title="Resume"><i class="ph ph-file-text"></i></a>
     </div>
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
   <script>
-    // --- 1. CONFIGURATION ---
-    const SUPABASE_URL = 'https://afadvyuogztogdclfjlq.supabase.co';
-    const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFmYWR2eXVvZ3p0b2dkY2xmamxxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjEyNzg1MjUsImV4cCI6MjA3Njg1NDUyNX0.rvIAmFYOKlvsjsUIHP7RTQB-q4M944QQCm4M7IgT3S4';
-    
-    // Initialize Client
-    const client = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+    // ---- Supabase ----
+    const client = supabase.createClient(
+      'https://afadvyuogztogdclfjlq.supabase.co',
+      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFmYWR2eXVvZ3p0b2dkY2xmamxxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjEyNzg1MjUsImV4cCI6MjA3Njg1NDUyNX0.rvIAmFYOKlvsjsUIHP7RTQB-q4M944QQCm4M7IgT3S4'
+    );
 
-    // --- 2. JS ANIMATION LOGIC ---
-    const peekDash = document.getElementById('peek-dash');
-    const dashBubble = document.getElementById('dashBubble');
+    document.getElementById('year').textContent = new Date().getFullYear();
 
-    // Peeking Dash
-    function triggerPeek(force = false) {
-      if(force || Math.random() > 0.5) {
-        peekDash.classList.add('visible');
-        setTimeout(() => dashBubble.classList.add('visible'), 600);
-        setTimeout(() => {
-          dashBubble.classList.remove('visible');
-          peekDash.classList.remove('visible');
-        }, 4000);
-      }
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    // ---- Boot loader ----
+    const boot = document.getElementById('bootLoader');
+    setTimeout(()=>{ boot.classList.add('done'); setTimeout(()=> boot.remove(), 600); }, prefersReducedMotion ? 200 : 1000);
+
+    // ---- Scroll progress bar ----
+    const scrollFill = document.getElementById('scrollFill');
+    function updateScrollProgress(){
+      const doc = document.documentElement;
+      const scrolled = doc.scrollTop || document.body.scrollTop;
+      const max = (doc.scrollHeight - doc.clientHeight) || 1;
+      scrollFill.style.width = Math.min(100, (scrolled / max) * 100) + '%';
     }
-    setInterval(() => triggerPeek(), 15000);
-    setTimeout(() => triggerPeek(true), 2000);
+    document.addEventListener('scroll', updateScrollProgress, { passive:true });
+    updateScrollProgress();
 
-    // --- 3. FORM HANDLER (NO REDIRECTS) ---
+    // ---- Ambient particle network canvas ----
+    (function(){
+      const canvas = document.getElementById('netCanvas');
+      const ctx = canvas.getContext('2d');
+      let w, h, particles = [];
+      const COLORS = ['100,255,218', '199,146,234', '255,203,107'];
+      function resize(){
+        w = canvas.width = window.innerWidth;
+        h = canvas.height = window.innerHeight;
+        const count = Math.min(70, Math.floor((w*h) / 22000));
+        particles = Array.from({length: count}, () => ({
+          x: Math.random()*w, y: Math.random()*h,
+          vx: (Math.random()-0.5)*0.25, vy: (Math.random()-0.5)*0.25,
+          r: Math.random()*1.6+0.6,
+          c: COLORS[Math.floor(Math.random()*COLORS.length)]
+        }));
+      }
+      window.addEventListener('resize', resize);
+      resize();
+
+      let running = !prefersReducedMotion;
+      document.addEventListener('visibilitychange', ()=>{
+        running = !document.hidden && !prefersReducedMotion;
+        if(running) requestAnimationFrame(loop);
+      });
+
+      function loop(){
+        if(!running) return;
+        ctx.clearRect(0,0,w,h);
+        for(const p of particles){
+          p.x += p.vx; p.y += p.vy;
+          if(p.x < 0 || p.x > w) p.vx *= -1;
+          if(p.y < 0 || p.y > h) p.vy *= -1;
+          ctx.beginPath();
+          ctx.fillStyle = `rgba(${p.c},0.7)`;
+          ctx.arc(p.x, p.y, p.r, 0, Math.PI*2);
+          ctx.fill();
+        }
+        for(let i=0;i<particles.length;i++){
+          for(let j=i+1;j<particles.length;j++){
+            const a = particles[i], b = particles[j];
+            const dx = a.x-b.x, dy = a.y-b.y;
+            const dist = Math.sqrt(dx*dx+dy*dy);
+            if(dist < 130){
+              ctx.strokeStyle = `rgba(100,255,218,${0.12 * (1 - dist/130)})`;
+              ctx.lineWidth = 1;
+              ctx.beginPath(); ctx.moveTo(a.x,a.y); ctx.lineTo(b.x,b.y); ctx.stroke();
+            }
+          }
+        }
+        requestAnimationFrame(loop);
+      }
+      if(running) requestAnimationFrame(loop);
+      else { // draw a single static frame for reduced-motion users
+        ctx.clearRect(0,0,w,h);
+        particles.forEach(p=>{ ctx.beginPath(); ctx.fillStyle = `rgba(${p.c},0.5)`; ctx.arc(p.x,p.y,p.r,0,Math.PI*2); ctx.fill(); });
+      }
+    })();
+
+    // ---- File-window cursor spotlight ----
+    document.querySelectorAll('.file-window').forEach(card=>{
+      card.addEventListener('mousemove', (e)=>{
+        const rect = card.getBoundingClientRect();
+        card.style.setProperty('--mx', (e.clientX - rect.left) + 'px');
+        card.style.setProperty('--my', (e.clientY - rect.top) + 'px');
+      });
+    });
+
+    // ---- Device tilt (subtle 3D) ----
+    const deviceEl = document.querySelector('.device');
+    if(deviceEl && !prefersReducedMotion){
+      const wrap = deviceEl.parentElement;
+      wrap.addEventListener('mousemove', (e)=>{
+        const rect = deviceEl.getBoundingClientRect();
+        const px = (e.clientX - rect.left) / rect.width - 0.5;
+        const py = (e.clientY - rect.top) / rect.height - 0.5;
+        deviceEl.style.transform = `perspective(700px) rotateY(${px*10}deg) rotateX(${-py*10}deg)`;
+      });
+      wrap.addEventListener('mouseleave', ()=>{ deviceEl.style.transform = 'perspective(700px) rotateY(0) rotateX(0)'; });
+    }
+
+    // ---- Magnetic buttons ----
+    if(!prefersReducedMotion){
+      document.querySelectorAll('.btn, .run-btn').forEach(btn=>{
+        btn.addEventListener('mousemove', (e)=>{
+          const rect = btn.getBoundingClientRect();
+          const mx = (e.clientX - rect.left - rect.width/2) * 0.18;
+          const my = (e.clientY - rect.top - rect.height/2) * 0.28;
+          btn.style.transform = `translate(${mx}px, ${my}px)`;
+        });
+        btn.addEventListener('mouseleave', ()=>{ btn.style.transform = ''; });
+      });
+    }
+
+    // ---- Typed hero code ----
+    const codeLines = [
+      { html: '<span class="kw">import</span> <span class="str">\'package:flutter/material.dart\';</span>' },
+      { html: '' },
+      { html: '<span class="kw">class</span> <span class="cls">Ashraf</span> <span class="kw">extends</span> <span class="cls">Developer</span> {' },
+      { html: '&nbsp;&nbsp;<span class="kw">final</span> role = <span class="str">\'Flutter Developer\'</span>;' },
+      { html: '&nbsp;&nbsp;<span class="kw">final</span> focus = <span class="str">\'pixel-perfect, buttery-smooth apps\'</span>;' },
+      { html: '' },
+      { html: '&nbsp;&nbsp;<span class="fn">@override</span>' },
+      { html: '&nbsp;&nbsp;<span class="cls">Widget</span> <span class="fn">build</span>(<span class="cls">BuildContext</span> ctx) {' },
+      { html: '&nbsp;&nbsp;&nbsp;&nbsp;<span class="kw">return</span> <span class="cls">Portfolio</span>(hireable: <span class="kw">true</span>);' },
+      { html: '&nbsp;&nbsp;}' },
+      { html: '}' },
+    ];
+    const el = document.getElementById('typedCode');
+    let li = 0, ci = 0;
+    function typeNext(){
+      if(li >= codeLines.length){
+        el.innerHTML += '<span class="caret"></span>';
+        return;
+      }
+      const full = codeLines[li].html;
+      // reveal char-by-char but keep html tags intact by chunking on tags
+      if(ci === 0){
+        el.innerHTML += '<div><span class="ln">' + String(li+1).padStart(2,'0') + '</span><span class="line-content" id="lc'+li+'"></span></div>';
+      }
+      const target = document.getElementById('lc'+li);
+      // simple approach: reveal whole line in small increments using textContent-safe segments
+      renderLineProgressive(target, full, () => { li++; ci=0; setTimeout(typeNext, full ? 40 : 10); });
+    }
+    function renderLineProgressive(target, html, done){
+      // split into tokens preserving tags, animate insertion tag-by-tag/word-by-word
+      const tmp = document.createElement('div'); tmp.innerHTML = html;
+      target.innerHTML = html; // instantly set (keeps markup valid), then reveal via CSS clip animation
+      target.style.display = 'inline-block';
+      target.style.overflow = 'hidden';
+      target.style.whiteSpace = 'nowrap';
+      target.style.maxWidth = '0px';
+      target.style.verticalAlign = 'bottom';
+      target.style.transition = 'max-width ' + Math.max(0.25, html.length*0.012) + 's steps(' + Math.max(html.length,1) + ')';
+      requestAnimationFrame(()=>{ target.style.maxWidth = '900px'; });
+      setTimeout(done, Math.max(250, html.length*12) + 60);
+    }
+    setTimeout(typeNext, 400);
+
+    // ---- Tab bar active state + smooth nav ----
+    const tabs = document.querySelectorAll('.tab');
+    const tabIndicator = document.getElementById('tabIndicator');
+    const tabbarEl = document.getElementById('tabbar');
+    function moveIndicator(){
+      const active = document.querySelector('.tab.active') || tabs[0];
+      if(!active) return;
+      const barRect = tabbarEl.getBoundingClientRect();
+      const r = active.getBoundingClientRect();
+      tabIndicator.style.left = (r.left - barRect.left + tabbarEl.scrollLeft) + 'px';
+      tabIndicator.style.width = r.width + 'px';
+    }
+    const sections = [...tabs].map(t => document.getElementById(t.dataset.target));
+    const io = new IntersectionObserver((entries)=>{
+      entries.forEach(entry=>{
+        if(entry.isIntersecting){
+          const id = entry.target.id;
+          tabs.forEach(t=> t.classList.toggle('active', t.dataset.target === id));
+          moveIndicator();
+        }
+      });
+    }, { rootMargin: '-40% 0px -50% 0px', threshold: 0 });
+    sections.forEach(s => s && io.observe(s));
+    window.addEventListener('resize', moveIndicator);
+    tabbarEl.addEventListener('scroll', moveIndicator, { passive:true });
+    setTimeout(moveIndicator, 50);
+
+    // ---- Reveal on scroll ----
+    const revealEls = document.querySelectorAll('.reveal');
+    const rio = new IntersectionObserver((entries)=>{
+      entries.forEach(entry=>{
+        if(entry.isIntersecting){ entry.target.classList.add('in'); rio.unobserve(entry.target); }
+      });
+    }, { threshold: 0.12 });
+    revealEls.forEach(e => rio.observe(e));
+
+    // ---- Avatar reveal on tap ----
+    const avatar = document.getElementById('avatarImg');
+    avatar.dataset.alt = "https://afadvyuogztogdclfjlq.supabase.co/storage/v1/object/sign/profile/DSC_4505.JPG?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV8zODcyNTRiZi0wNTk0LTQ1NDEtYTZmYy02MDRmYzRmZGNmNzEiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJwcm9maWxlL0RTQ180NTA1LkpQRyIsImlhdCI6MTc2NTE3MTE3NCwiZXhwIjoxOTIyODUxMTc0fQ.6olBeoBGVZU_kAcVDykYX37WkHiIDhAns5EQOCEGzt8";
+    avatar.style.cursor = 'pointer';
+    avatar.style.objectPosition = 'center 20%';
+
+    // ---- Contact form ----
     document.getElementById('hireForm').addEventListener('submit', async (e) => {
       e.preventDefault();
       const status = document.getElementById('status');
@@ -642,131 +804,43 @@
       const name = document.getElementById('name').value;
       const email = document.getElementById('email').value;
       const message = document.getElementById('message').value;
-      
-      status.textContent = 'Sending...';
-      status.style.color = '#fff';
+
+      status.textContent = '> sending...';
+      status.style.color = 'var(--text-faint)';
       btn.disabled = true;
-      btn.style.opacity = '0.5';
 
-      // Insert into Supabase only
-      const { data, error } = await client.from('hire_requests').insert([{ name, email, message }]);
+      const { error } = await client.from('hire_requests').insert([{ name, email, message }]);
 
-      if (error) { 
-        console.error(error);
-        status.textContent = '❌ Error: ' + error.message; 
-        status.style.color = 'red'; 
-      } else { 
-        // Show PROFESSIONAL SUCCESS POPUP
+      if (error) {
+        status.textContent = '> error: ' + error.message;
+        status.style.color = 'var(--rose)';
+      } else {
         showSuccessPopup(name);
-        e.target.reset(); // Clear form
-        status.textContent = ''; 
+        e.target.reset();
+        status.textContent = '';
       }
       btn.disabled = false;
-      btn.style.opacity = '1';
     });
 
-    // --- 4. PARTICLES ENGINE ---
-    const canvas = document.getElementById('bg-canvas');
-    const ctx = canvas.getContext('2d');
-    let w, h;
-    let activeThemeColor = '#6366f1'; 
-
-    function resize() { w = canvas.width = window.innerWidth; h = canvas.height = window.innerHeight; }
-    window.addEventListener('resize', resize);
-    resize();
-
-    class Node {
-      constructor() {
-        this.x = Math.random() * w; this.y = Math.random() * h;
-        this.vx = (Math.random() - 0.5) * 0.5; this.vy = (Math.random() - 0.5) * 0.5;
-        this.radius = Math.random() * 150 + 50; 
-      }
-      update() {
-        this.x += this.vx; this.y += this.vy;
-        if (this.x < 0 || this.x > w) this.vx *= -1;
-        if (this.y < 0 || this.y > h) this.vy *= -1;
-      }
-      draw(color) {
-        ctx.beginPath();
-        const g = ctx.createRadialGradient(this.x, this.y, 0, this.x, this.y, this.radius);
-        g.addColorStop(0, color); g.addColorStop(1, 'transparent');
-        ctx.fillStyle = g; ctx.globalAlpha = 0.15; 
-        ctx.arc(this.x, this.y, this.radius, 0, Math.PI*2);
-        ctx.fill(); ctx.globalAlpha = 1.0; 
-      }
-    }
-    const nodes = Array.from({ length: 15 }, () => new Node());
-    function animate() {
-      ctx.clearRect(0, 0, w, h);
-      nodes.forEach(node => { node.update(); node.draw(activeThemeColor); });
-      requestAnimationFrame(animate);
-    }
-    animate();
-
-    // --- 5. THEME & SPOTLIGHT ---
-    const themes = [
-      { bg: '#050505', primary: '#6366f1', accent: '#ec4899', highlight: '#22d3ee' },
-      { bg: '#020a02', primary: '#22c55e', accent: '#4ade80', highlight: '#a3e635' },
-      { bg: '#0a020a', primary: '#9333ea', accent: '#db2777', highlight: '#fbbf24' },
-      { bg: '#02040a', primary: '#2563eb', accent: '#06b6d4', highlight: '#38bdf8' },
-      { bg: '#0f0202', primary: '#e11d48', accent: '#f43f5e', highlight: '#fb7185' }
-    ];
-    function randomizeTheme() {
-      const t = themes[Math.floor(Math.random() * themes.length)];
-      const root = document.documentElement;
-      root.style.setProperty('--primary', t.primary);
-      root.style.setProperty('--accent', t.accent);
-      root.style.setProperty('--highlight', t.highlight);
-      activeThemeColor = t.primary;
-    }
-    window.onload = randomizeTheme;
-
-    document.addEventListener('mousemove', (e) => {
-      document.querySelectorAll('.spotlight-card').forEach(card => {
-        const rect = card.getBoundingClientRect();
-        card.style.setProperty('--mouse-x', `${e.clientX - rect.left}px`);
-        card.style.setProperty('--mouse-y', `${e.clientY - rect.top}px`);
-      });
-    });
-
-    // --- 6. ADVANCED SUCCESS POPUP (Optimized) ---
     function showSuccessPopup(userName) {
-      const popup = document.createElement('div');
       const safeName = userName ? userName.split(' ')[0] : 'there';
-      
-      // Using class names defined in CSS instead of inline styles for cleaner code
-      popup.className = 'custom-popup-overlay';
-      
-      popup.innerHTML = `
-        <div class="custom-popup-box">
-          <div class="custom-popup-bg-effect"></div>
-          
-          <div class="popup-icon-container">
-            <svg viewBox="0 0 52 52" style="width: 40px; height: 40px; stroke: var(--highlight); stroke-width: 4; fill: none; stroke-linecap: round; stroke-linejoin: round;">
-              <circle cx="26" cy="26" r="25" style="stroke-dasharray: 166; stroke-dashoffset: 166; animation: stroke 0.6s cubic-bezier(0.65, 0, 0.45, 1) forwards;"></circle>
-              <path d="M14 27 l7 7 l16 -16" style="stroke-dasharray: 48; stroke-dashoffset: 48; animation: stroke 0.3s cubic-bezier(0.65, 0, 0.45, 1) 0.6s forwards;"></path>
-            </svg>
+      const overlay = document.createElement('div');
+      overlay.className = 'popup-overlay';
+      overlay.innerHTML = `
+        <div class="popup-box">
+          <div class="chrome">
+            <div class="dots"><span class="r"></span><span class="y"></span><span class="g"></span></div>
+            <span class="filename">success.log</span>
           </div>
-
-          
-          <h2 style="margin:0 0 8px; font-size: 24px; color:white; position:relative; text-align: center; width: 50%;">       Message Sent</h2>
-          <p class="popup-message">
-            Thanks for reaching out, <strong>${safeName}</strong><br>I'll get back to you as soon as possible.
-          </p>
-          
-          <button onclick="closePopup(this)" class="popup-btn">
-            Awesome
-          </button>
-        </div>
-      `;
-      document.body.appendChild(popup);
-    }
-
-    function closePopup(btn) {
-      const overlay = btn.closest('.custom-popup-overlay');
-      overlay.style.transition = 'opacity 0.3s ease';
-      overlay.style.opacity = '0';
-      setTimeout(() => overlay.remove(), 300);
+          <div class="body">
+            <div class="icon"><i class="ph ph-check-circle" style="font-size:38px;color:#7CFFB2"></i></div>
+            <h3>Request Received 🚀</h3>
+            <p>Your message is safely delivered, <strong>${safeName}</strong>. I will review your request and respond soon.</p>
+            <div style="margin-bottom:18px;padding:10px;border-radius:12px;background:rgba(124,255,178,.08);color:#7CFFB2;font-family:var(--mono);font-size:12px">STATUS: WAITING FOR RESPONSE</div>
+            <button class="run-btn" style="width:100%;justify-content:center;" onclick="this.closest('.popup-overlay').remove()">Got it</button>
+          </div>
+        </div>`;
+      document.body.appendChild(overlay);
     }
   </script>
 </body>
